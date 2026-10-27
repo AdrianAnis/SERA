@@ -18,4 +18,4 @@ pnpm dev
 1. Open `/hospital/patients/p-001/care-plan/new` in one tab and `/patient/today` in another.
 2. Click **Selesaikan sesi**. The patient tab switches to the new plan version without a reload.
 
-Akun dokter: `rina.kartika@rs-sehat.id` (kata sandi bebas). Akun pasien: email dan kata sandi apa saja.
+Login dokter dan pasien menerima email dan kata sandi apa saja (email harus berformat valid).

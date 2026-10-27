@@ -1,7 +1,7 @@
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 
-import { DEMO_PATIENT_ID, mockDoctors } from "@/mocks/patients"
+import { DEMO_DOCTOR_ID, DEMO_PATIENT_ID } from "@/mocks/patients"
 
 const AUTH_STORAGE_KEY = "hc:auth"
 
@@ -15,7 +15,7 @@ type Session = {
 type AuthState = {
   doctor: Session | null
   patient: Session | null
-  loginDoctor: (email: string) => boolean
+  loginDoctor: () => void
   loginPatient: () => void
   logout: (surface: Surface) => void
 }
@@ -25,12 +25,7 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       doctor: null,
       patient: null,
-      loginDoctor: (email) => {
-        const doctor = mockDoctors.find((item) => item.email.toLowerCase() === email.trim().toLowerCase())
-        if (!doctor) return false
-        set({ doctor: { userId: doctor.id, signedInAt: new Date().toISOString() } })
-        return true
-      },
+      loginDoctor: () => set({ doctor: { userId: DEMO_DOCTOR_ID, signedInAt: new Date().toISOString() } }),
       loginPatient: () => set({ patient: { userId: DEMO_PATIENT_ID, signedInAt: new Date().toISOString() } }),
       logout: (surface) => set(surface === "doctor" ? { doctor: null } : { patient: null }),
     }),

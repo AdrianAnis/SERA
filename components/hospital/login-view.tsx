@@ -23,11 +23,8 @@ export function LoginView() {
     defaultValues: { email: "", password: "" },
   })
 
-  function handleSubmit(values: DoctorLoginValues): void {
-    if (!loginDoctor(values.email)) {
-      form.setError("email", { message: "Email tidak terdaftar di rumah sakit ini" })
-      return
-    }
+  function handleSubmit(): void {
+    loginDoctor()
     router.replace(routes.hospital.dashboard)
   }
 
