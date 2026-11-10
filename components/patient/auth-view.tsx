@@ -148,7 +148,8 @@ export function AuthView() {
   function handleAuthenticated(response: AuthResponse): void {
     setErrorMessage(null)
     loginPatient({
-      userId: response.user.patientId || response.user.id,
+      userId: response.user.id,
+      patientId: response.user.patientId,
       token: response.token,
       email: response.user.email,
       name: response.user.name,

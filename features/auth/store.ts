@@ -9,6 +9,8 @@ type Surface = "doctor" | "patient"
 
 export type Session = {
   userId: string
+  patientId?: string | null
+  doctorId?: string | null
   signedInAt: string
   token?: string
   name?: string
@@ -32,6 +34,7 @@ export const useAuthStore = create<AuthState>()(
         set({
           doctor: {
             userId: session?.userId || DEMO_DOCTOR_ID,
+            doctorId: session?.doctorId,
             token: session?.token,
             name: session?.name,
             email: session?.email,
@@ -42,6 +45,7 @@ export const useAuthStore = create<AuthState>()(
         set({
           patient: {
             userId: session?.userId || DEMO_PATIENT_ID,
+            patientId: session?.patientId,
             token: session?.token,
             name: session?.name,
             email: session?.email,

@@ -45,7 +45,8 @@ export function LoginView() {
 
       // Simpan session dokter
       loginDoctor({
-        userId: response.user.doctorId || response.user.id,
+        userId: response.user.id,
+        doctorId: response.user.doctorId,
         token: response.token,
         email: response.user.email,
         name: response.user.name,

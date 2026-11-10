@@ -19,20 +19,41 @@ export type PatientContext = {
 
 export function usePatientContext(): PatientContext {
   const isHydrated = useHydrated()
-  const patientId = useAuthStore((state) => state.patient?.userId)
+  const patientSession = useAuthStore((state) => state.patient)
+  const patientId = patientSession?.patientId || (patientSession?.userId?.startsWith("p-") ? patientSession.userId : undefined)
   const patients = usePatientStore((state) => state.patients)
   const doctors = usePatientStore((state) => state.doctors)
   const plans = useCarePlanStore((state) => state.plans)
   const fetchPatientRecord = usePatientStore((state) => state.fetchPatientRecord)
 
   useEffect(() => {
-    if (patientId) {
+    if (patientId && patientId.startsWith("p-")) {
       void fetchPatientRecord(patientId)
     }
   }, [patientId, fetchPatientRecord])
 
-  const patient = patientId ? selectPatientById(patients, patientId) : undefined
-  const activePlan = patient ? selectActivePlan(plans, patient.id) : undefined
+  let patient = patientId ? selectPatientById(patients, patientId) : undefined
+
+  // For unlinked users (registered via app, not yet connected to hospital MRN):
+  if (!patient && patientSession) {
+    patient = {
+      id: patientSession.userId,
+      mrn: "UNLINKED",
+      name: patientSession.name || "Pasien",
+      gender: "male",
+      birthDate: "2000-01-01",
+      phone: "-",
+      guardianName: "-",
+      guardianPhone: "-",
+      address: "-",
+      primaryDiagnosis: "Belum terhubung ke Faskes",
+      conditions: [],
+      allergies: [],
+      assignedDoctorId: "",
+    }
+  }
+
+  const activePlan = patient && patient.mrn !== "UNLINKED" ? selectActivePlan(plans, patient.id) : undefined
   const activeDoctor = activePlan ? selectDoctorById(doctors, activePlan.createdBy) : undefined
 
   return { isHydrated, patient, activePlan, activeDoctor }
