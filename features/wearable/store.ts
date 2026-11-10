@@ -34,6 +34,9 @@ export const useWearableStore = create<WearableState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ connections: state.connections }),
       skipHydration: true,
+      migrate: (persistedState: any) => ({
+        connections: persistedState?.connections || {},
+      }),
     },
   ),
 )

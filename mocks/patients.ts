@@ -9,7 +9,7 @@ export const mockDoctors: Doctor[] = [
     id: DEMO_DOCTOR_ID,
     name: "Dr. Haruka Tanaka, MD",
     specialty: "Internal Medicine",
-    email: "haruka.tanaka@sera-health.jp",
+    email: "haruka.tanaka@gmail.com",
     hospital: "Sakura General Hospital",
   },
 ]

@@ -1,9 +1,11 @@
 "use client"
 
+import { useEffect, useState } from "react"
+
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ChevronLeft } from "lucide-react"
+import { AlertCircle, ChevronLeft, Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 
 import { BrandLogo } from "@/components/brand-logo"
@@ -13,19 +15,52 @@ import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { doctorLoginSchema, type DoctorLoginValues } from "@/features/auth/schema"
 import { useAuthStore } from "@/features/auth/store"
+import { authApi, ApiError } from "@/lib/api"
 import { routes } from "@/lib/routes"
 
 export function LoginView() {
   const router = useRouter()
   const loginDoctor = useAuthStore((state) => state.loginDoctor)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+
   const form = useForm<DoctorLoginValues>({
     resolver: zodResolver(doctorLoginSchema),
     defaultValues: { email: "", password: "" },
   })
 
-  function handleSubmit(): void {
-    loginDoctor()
-    router.replace(routes.hospital.dashboard)
+  useEffect(() => {
+    const subscription = form.watch(() => {
+      if (errorMessage) setErrorMessage(null)
+    })
+    return () => subscription.unsubscribe()
+  }, [form, errorMessage])
+
+  async function handleSubmit(values: DoctorLoginValues): Promise<void> {
+    setErrorMessage(null)
+    setIsLoading(true)
+
+    try {
+      const response = await authApi.loginDoctor(values)
+
+      // Simpan session dokter
+      loginDoctor({
+        userId: response.user.doctorId || response.user.id,
+        token: response.token,
+        email: response.user.email,
+        name: response.user.name,
+      })
+
+      router.replace(routes.hospital.dashboard)
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setErrorMessage(err.userMessage)
+      } else {
+        setErrorMessage((err as Error).message || "Failed to sign in. Please try again.")
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -57,12 +92,40 @@ export function LoginView() {
             <p className="type-caption">Gunakan email rumah sakit Anda.</p>
           </div>
 
+          {errorMessage && (
+            <div className="flex items-start gap-2.5 rounded-xl border border-destructive/20 bg-destructive/10 p-3.5 text-sm text-destructive" role="alert">
+              <AlertCircle className="mt-0.5 size-4 shrink-0" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
-              <FloatingField control={form.control} name="email" label="Email" placeholder="nama@rumahsakit.id" type="email" autoComplete="email" />
-              <FloatingField control={form.control} name="password" label="Kata sandi" placeholder="Masukkan kata sandi" type="password" autoComplete="current-password" />
-              <Button type="submit" size="lg" className="h-12 w-full">
-                Masuk
+              <FloatingField
+                control={form.control}
+                name="email"
+                label="Email"
+                placeholder="nama@rumahsakit.id"
+                type="email"
+                autoComplete="email"
+              />
+              <FloatingField
+                control={form.control}
+                name="password"
+                label="Kata sandi"
+                placeholder="Masukkan kata sandi"
+                type="password"
+                autoComplete="current-password"
+              />
+              <Button type="submit" size="lg" disabled={isLoading} className="h-12 w-full">
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 size-4 animate-spin" />
+                    Memverifikasi...
+                  </>
+                ) : (
+                  "Masuk"
+                )}
               </Button>
             </form>
           </Form>
