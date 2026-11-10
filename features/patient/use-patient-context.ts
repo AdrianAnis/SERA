@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import { useAuthStore } from "@/features/auth/store"
 import { selectActivePlan } from "@/features/care-plan/selectors"
 import { useCarePlanStore } from "@/features/care-plan/store"
@@ -22,6 +23,13 @@ export function usePatientContext(): PatientContext {
   const patients = usePatientStore((state) => state.patients)
   const doctors = usePatientStore((state) => state.doctors)
   const plans = useCarePlanStore((state) => state.plans)
+  const fetchPatientRecord = usePatientStore((state) => state.fetchPatientRecord)
+
+  useEffect(() => {
+    if (patientId) {
+      void fetchPatientRecord(patientId)
+    }
+  }, [patientId, fetchPatientRecord])
 
   const patient = patientId ? selectPatientById(patients, patientId) : undefined
   const activePlan = patient ? selectActivePlan(plans, patient.id) : undefined

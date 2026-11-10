@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import { selectActivePlan, selectPlanHistory } from "@/features/care-plan/selectors"
 import { useCarePlanStore } from "@/features/care-plan/store"
 import type { CarePlan } from "@/features/care-plan/types"
@@ -23,6 +24,13 @@ export function usePatientRecord(patientId: string): PatientRecord {
   const doctors = usePatientStore((state) => state.doctors)
   const history = usePatientStore((state) => state.history)
   const plans = useCarePlanStore((state) => state.plans)
+  const fetchPatientRecord = usePatientStore((state) => state.fetchPatientRecord)
+
+  useEffect(() => {
+    if (patientId) {
+      void fetchPatientRecord(patientId)
+    }
+  }, [patientId, fetchPatientRecord])
 
   const patient = selectPatientById(patients, patientId)
 
@@ -35,3 +43,4 @@ export function usePatientRecord(patientId: string): PatientRecord {
     healthHistory: selectPatientHistory(history, patientId),
   }
 }
+
