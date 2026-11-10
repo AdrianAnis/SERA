@@ -262,3 +262,143 @@ export const patientApi = {
     return request<PatientRecord>(`/hospital/patients/${id}/record`)
   },
 }
+
+export type PatientSeraStatus = "connected" | "pending" | "unlinked_registered" | "unregistered"
+
+export type FaskesLinkRequest = {
+  id: string
+  patientId: string
+  doctorId: string
+  userId?: string | null
+  status: "pending" | "approved" | "rejected" | "expired"
+  requestedBy: string
+  notes?: string | null
+  respondedAt?: string | null
+  createdAt: string
+  updatedAt: string
+  doctorName?: string
+  doctorSpecialty?: string
+  hospitalName?: string
+  patientName?: string
+  patientMrn?: string
+}
+
+export type PatientInvitation = {
+  id: string
+  patientId: string
+  doctorId: string
+  token: string
+  recipientPhone: string
+  recipientEmail?: string | null
+  status: "sent" | "accepted" | "expired"
+  expiresAt: string
+  acceptedAt?: string | null
+  createdAt: string
+  updatedAt: string
+  doctorName?: string
+  hospitalName?: string
+  patientName?: string
+  patientMrn?: string
+  activationUrl?: string
+}
+
+export type SeraStatusResponse = {
+  patientId: string
+  mrn: string
+  patientName: string
+  status: PatientSeraStatus
+  user?: {
+    id: string
+    email: string
+    name: string
+    phone?: string | null
+    isVerified: boolean
+  } | null
+  pendingRequest?: FaskesLinkRequest | null
+  latestInvitation?: PatientInvitation | null
+}
+
+export const connectionApi = {
+  /**
+   * Cek status koneksi akun SERA pasien (Hospital / Doctor)
+   */
+  getSeraStatus: (patientId: string) => {
+    return request<SeraStatusResponse>(`/hospital/patients/${patientId}/sera-status`)
+  },
+
+  /**
+   * Kirim permintaan penghubungan ke pasien yang sudah terdaftar di SERA
+   */
+  requestLink: (patientId: string, data?: { notes?: string; userId?: string }) => {
+    return request<FaskesLinkRequest>(`/hospital/patients/${patientId}/request-link`, {
+      method: "POST",
+      body: JSON.stringify(data || {}),
+    })
+  },
+
+  /**
+   * Generate undangan aktivasi untuk pasien yang belum punya akun
+   */
+  invitePatient: (patientId: string, data?: { recipientPhone?: string; recipientEmail?: string }) => {
+    return request<PatientInvitation>(`/hospital/patients/${patientId}/invite`, {
+      method: "POST",
+      body: JSON.stringify(data || {}),
+    })
+  },
+
+  /**
+   * Ambil daftar permintaan penghubungan faskes yang masuk ke pasien
+   */
+  getPendingRequests: (token?: string) => {
+    return request<FaskesLinkRequest[]>("/patient/link-requests", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  /**
+   * Pasien menyetujui permintaan penghubungan faskes
+   */
+  approveLinkRequest: (requestId: string, token?: string) => {
+    return request<{ patientId: string; patientName: string; mrn: string; doctorName?: string; hospitalName?: string }>(
+      `/patient/link-requests/${requestId}/approve`,
+      {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      }
+    )
+  },
+
+  /**
+   * Pasien menolak permintaan penghubungan faskes
+   */
+  rejectLinkRequest: (requestId: string, token?: string) => {
+    return request<{ success: boolean; message: string }>(
+      `/patient/link-requests/${requestId}/reject`,
+      {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      }
+    )
+  },
+
+  /**
+   * Verifikasi token undangan aktivasi
+   */
+  verifyInvitation: (token: string) => {
+    return request<PatientInvitation>(`/patient/invitations/verify?token=${encodeURIComponent(token)}`)
+  },
+
+  /**
+   * Pasien menerima token undangan dan menautkan profil
+   */
+  acceptInvitation: (token: string, authToken?: string) => {
+    return request<{ patientId: string; patientName: string; mrn: string; hospitalName?: string }>(
+      "/patient/invitations/accept",
+      {
+        method: "POST",
+        headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
+        body: JSON.stringify({ token }),
+      }
+    )
+  },
+}

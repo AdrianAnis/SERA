@@ -7,6 +7,7 @@ import { HospitalPageSkeleton } from "@/components/hospital/hospital-page-skelet
 import { PageHeader } from "@/components/hospital/page-header"
 import { PatientHistoryTimeline } from "@/components/hospital/patient-history-timeline"
 import { PlanItemsList } from "@/components/hospital/plan-items-list"
+import { SeraConnectionCard } from "@/components/hospital/sera-connection-card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -99,6 +100,8 @@ export function PatientDetailView({ patientId }: PatientDetailViewProps) {
 
       <div className="grid items-start gap-6 p-4 md:p-6 xl:grid-cols-3">
         <div className="space-y-6">
+          <SeraConnectionCard patientId={patient.id} patientName={patient.name} phone={patient.phone} />
+
           <section className="space-y-4 rounded-2xl border bg-card p-5">
             <h2 className="type-subheading">Identitas</h2>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">

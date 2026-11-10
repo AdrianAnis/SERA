@@ -10,6 +10,7 @@ import { NextReminderCard } from "@/components/patient/next-reminder-card"
 import { PageSkeleton } from "@/components/patient/page-skeleton"
 import { ReportPromptLink } from "@/components/patient/report-prompt-link"
 import { PlanUpdateBanner } from "@/components/patient/plan-update-banner"
+import { FaskesConnectionBanner } from "@/components/patient/faskes-connection-banner"
 import { ReminderTimeline } from "@/components/patient/reminder-timeline"
 import { ScheduleProgress } from "@/components/patient/schedule-progress"
 import { TodayHeader } from "@/components/patient/today-header"
@@ -50,6 +51,7 @@ export function TodayView() {
         firstName={selectFirstName(patient)}
       />
       <PlanUpdateBanner />
+      <FaskesConnectionBanner />
       {activePlan ? (
         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
           <div className="min-w-0 space-y-6 lg:col-span-7 xl:col-span-8">
