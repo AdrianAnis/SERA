@@ -1,4 +1,5 @@
 import type { Doctor, HealthHistoryEntry, Patient, PatientRecord } from "@/features/patient/types"
+import type { CarePlan, CarePlanItem } from "@/features/care-plan/types"
 import type { DoctorLoginValues, PatientSignInValues, PatientSignUpValues } from "@/features/auth/schema"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
@@ -507,6 +508,65 @@ export const consultationApi = {
       method: "POST",
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
       body: JSON.stringify(data),
+    })
+  },
+}
+
+export type SyncNotificationResponse = {
+  hasUpdate: boolean
+  plan?: CarePlan
+  version?: number
+  updatedAt?: string | null
+}
+
+export const carePlanApi = {
+  getHospitalCarePlans: (patientId: string, token?: string) => {
+    return request<CarePlan[]>(`/hospital/patients/${patientId}/care-plans`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  getHospitalActivePlan: (patientId: string, token?: string) => {
+    return request<CarePlan | null>(`/hospital/patients/${patientId}/care-plans/active`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  publishPlan: (
+    patientId: string,
+    data: { sourceText: string; items: CarePlanItem[]; autoConfirm?: boolean },
+    token?: string
+  ) => {
+    return request<{ plan: CarePlan; sync: unknown }>(`/hospital/patients/${patientId}/care-plans`, {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      body: JSON.stringify(data),
+    })
+  },
+
+  getPatientActivePlan: (token: string) => {
+    return request<CarePlan | null>("/patient/care-plan/active", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  },
+
+  getPatientCarePlans: (token: string) => {
+    return request<CarePlan[]>("/patient/care-plans", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  },
+
+  getSyncNotification: (token: string) => {
+    return request<SyncNotificationResponse>("/patient/care-plan/sync-notification", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  },
+
+  acknowledgePlan: (planId: string, token: string) => {
+    return request<{ message: string }>("/patient/care-plan/acknowledge", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ planId }),
     })
   },
 }

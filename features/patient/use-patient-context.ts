@@ -28,9 +28,10 @@ export function usePatientContext(): PatientContext {
   const patients = usePatientStore((state) => state.patients)
   const doctors = usePatientStore((state) => state.doctors)
   const plans = useCarePlanStore((state) => state.plans)
+  const fetchPatientActivePlan = useCarePlanStore((state) => state.fetchPatientActivePlan)
   const fetchPatientRecord = usePatientStore((state) => state.fetchPatientRecord)
 
-  // Sync latest patient record ID from backend when doctor confirms connection
+  // Sync latest patient record ID and active care plan from backend
   const syncSession = useCallback(async () => {
     if (!patientSession?.token) return
     try {
@@ -42,10 +43,12 @@ export function usePatientContext(): PatientContext {
           name: me.name || patientSession.name,
         })
       }
+      // Sync active care plan from backend for this patient
+      void fetchPatientActivePlan(patientSession.token)
     } catch {
       // Silently ignore if offline
     }
-  }, [patientSession, loginPatient])
+  }, [patientSession, loginPatient, fetchPatientActivePlan])
 
   useEffect(() => {
     void syncSession()

@@ -18,6 +18,7 @@ import { diffCarePlanItems } from "@/features/care-plan/diff"
 import { createBlankItem, createItemId } from "@/features/care-plan/factory"
 import { CARE_PLAN_ITEM_KIND_LABEL, CARE_PLAN_KIND_ORDER } from "@/features/care-plan/labels"
 import { carePlanFormSchema, type CarePlanFormValues } from "@/features/care-plan/schema"
+import { useAuthStore } from "@/features/auth/store"
 import { useCarePlanStore } from "@/features/care-plan/store"
 import type { CarePlan, CarePlanItemKind } from "@/features/care-plan/types"
 import type { Doctor, Patient } from "@/features/patient/types"
@@ -52,6 +53,7 @@ function countByKind(items: CarePlanFormValues["items"]): Record<CarePlanItemKin
 
 export function CarePlanBuilder({ patient, doctor, activePlan, nextVersion }: CarePlanBuilderProps) {
   const router = useRouter()
+  const doctorSession = useAuthStore((state) => state.doctor)
   const publishPlan = useCarePlanStore((state) => state.publishPlan)
   const form = useForm<CarePlanFormValues>({
     resolver: zodResolver(carePlanFormSchema),
@@ -88,10 +90,17 @@ export function CarePlanBuilder({ patient, doctor, activePlan, nextVersion }: Ca
     }, AI_DELAY_MS)
   }
 
-  function publish(values: CarePlanFormValues): void {
-    publishPlan({ patientId: patient.id, createdBy: doctor.id, sourceText: values.sourceText.trim(), items: values.items })
-    toast.success(`Sesi selesai. Care plan ${versionLabel} dikirim ke ${patient.name}`)
-    router.push(routes.hospital.patientDetail(patient.id))
+  async function publish(values: CarePlanFormValues): Promise<void> {
+    try {
+      await publishPlan(
+        { patientId: patient.id, createdBy: doctor.id, sourceText: values.sourceText.trim(), items: values.items },
+        doctorSession?.token
+      )
+      toast.success(`Sesi selesai. Care plan ${versionLabel} dikirim ke ${patient.name}`)
+      router.push(routes.hospital.patientDetail(patient.id))
+    } catch (err) {
+      toast.error((err as Error).message || "Gagal menerbitkan care plan")
+    }
   }
 
   const itemsError = form.formState.errors.items?.message ?? form.formState.errors.items?.root?.message

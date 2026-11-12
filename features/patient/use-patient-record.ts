@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
+import { useAuthStore } from "@/features/auth/store"
 import { selectActivePlan, selectPlanHistory } from "@/features/care-plan/selectors"
 import { useCarePlanStore } from "@/features/care-plan/store"
 import type { CarePlan } from "@/features/care-plan/types"
@@ -20,17 +21,20 @@ export type PatientRecord = {
 
 export function usePatientRecord(patientId: string): PatientRecord {
   const isHydrated = useHydrated()
+  const doctorSession = useAuthStore((state) => state.doctor)
   const patients = usePatientStore((state) => state.patients)
   const doctors = usePatientStore((state) => state.doctors)
   const history = usePatientStore((state) => state.history)
   const plans = useCarePlanStore((state) => state.plans)
   const fetchPatientRecord = usePatientStore((state) => state.fetchPatientRecord)
+  const fetchHospitalPlans = useCarePlanStore((state) => state.fetchHospitalPlans)
 
   useEffect(() => {
     if (patientId) {
       void fetchPatientRecord(patientId)
+      void fetchHospitalPlans(patientId, doctorSession?.token)
     }
-  }, [patientId, fetchPatientRecord])
+  }, [patientId, fetchPatientRecord, fetchHospitalPlans, doctorSession?.token])
 
   const patient = selectPatientById(patients, patientId)
 
