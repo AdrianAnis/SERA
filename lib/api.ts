@@ -402,3 +402,111 @@ export const connectionApi = {
     )
   },
 }
+
+export type DoctorWithStatus = {
+  id: string
+  name: string
+  specialty: string
+  email: string
+  hospital: string
+  bio?: string | null
+  avatarUrl?: string | null
+  phone?: string | null
+  consultationStatus: "none" | "pending" | "approved" | "rejected"
+  activeRequestId?: string | null
+}
+
+export type ConsultationRequestItem = {
+  id: string
+  userId: string
+  userName: string
+  userEmail: string
+  userPhone?: string | null
+  doctorId: string
+  status: "pending" | "approved" | "rejected" | "cancelled"
+  notes?: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export type InitRecordResponse = {
+  requestId: string
+  nextMrn: string
+  user: {
+    id: string
+    name: string
+    email: string
+    phone?: string | null
+  }
+}
+
+export type AcceptAndCreateRecordInput = {
+  mrn: string
+  name: string
+  gender: "male" | "female"
+  birthDate: string
+  phone: string
+  guardianName?: string
+  guardianPhone?: string
+  address?: string
+  primaryDiagnosis?: string
+  conditions?: string[]
+  allergies?: string[]
+}
+
+export const consultationApi = {
+  getDoctors: (query?: string, token?: string) => {
+    const url = query ? `/patient/doctors?q=${encodeURIComponent(query)}` : "/patient/doctors"
+    return request<DoctorWithStatus[]>(url, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  getDoctorDetail: (doctorId: string, token?: string) => {
+    return request<DoctorWithStatus>(`/patient/doctors/${doctorId}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  requestConsultation: (doctorId: string, notes?: string, token?: string) => {
+    return request<{ id: string; status: string }>(`/patient/consultation-requests`, {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      body: JSON.stringify({ doctorId, notes }),
+    })
+  },
+
+  cancelConsultation: (requestId: string, token?: string) => {
+    return request<{ message: string }>(`/patient/consultation-requests/${requestId}/cancel`, {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  getDoctorRequests: (token?: string) => {
+    return request<ConsultationRequestItem[]>("/hospital/requests", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  getInitRecord: (requestId: string, token?: string) => {
+    return request<InitRecordResponse>(`/hospital/requests/${requestId}/init-record`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  rejectRequest: (requestId: string, token?: string) => {
+    return request<{ message: string }>(`/hospital/requests/${requestId}/reject`, {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  acceptAndCreateRecord: (requestId: string, data: AcceptAndCreateRecordInput, token?: string) => {
+    return request<Patient>(`/hospital/requests/${requestId}/accept-and-create-record`, {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      body: JSON.stringify(data),
+    })
+  },
+}
