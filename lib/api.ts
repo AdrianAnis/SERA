@@ -1,6 +1,13 @@
 import type { Doctor, HealthHistoryEntry, Patient, PatientRecord } from "@/features/patient/types"
 import type { CarePlan, CarePlanItem } from "@/features/care-plan/types"
+import type { FeedbackCategory, FeedbackEntry } from "@/features/feedback/types"
+import type { ReminderView } from "@/features/reminder/selectors"
 import type { DoctorLoginValues, PatientSignInValues, PatientSignUpValues } from "@/features/auth/schema"
+
+export type DailyProgress = {
+  done: number
+  total: number
+}
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -568,5 +575,103 @@ export const carePlanApi = {
       headers: { Authorization: `Bearer ${token}` },
       body: JSON.stringify({ planId }),
     })
+  },
+}
+
+export type TodayScheduleResponse = {
+  date: string
+  reminders: ReminderView[]
+  progress: DailyProgress
+  nextReminder?: ReminderView
+  activePlanSummary?: { id: string; version: number }
+}
+
+export type AdherenceMetricsResponse = {
+  patientId: string
+  adherenceRatio: number | null
+  adherencePercentage: number
+  streak: number
+  days: { date: string; done: number; total: number }[]
+  trend: { date: string; medication: number | null; activity: number | null }[]
+  summary: {
+    medicationAverage: number | null
+    activityAverage: number | null
+    lowest?: { kind: "medication" | "activity"; date: string; percent: number }
+  }
+}
+
+export const reminderApi = {
+  getTodaySchedule: (date?: string, token?: string) => {
+    const query = date ? `?date=${encodeURIComponent(date)}` : ""
+    return request<TodayScheduleResponse>(`/patient/today${query}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  toggleReminder: (
+    input: {
+      key: string
+      itemId: string
+      kind: "medication" | "activity"
+      date: string
+      time?: string | null
+    },
+    token?: string
+  ) => {
+    return request<{ completed: boolean; key: string; completedAt?: string }>(
+      "/patient/reminders/toggle",
+      {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        body: JSON.stringify(input),
+      }
+    )
+  },
+
+  getPatientAdherence: (token?: string) => {
+    return request<AdherenceMetricsResponse>("/patient/adherence", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  getHospitalPatientAdherence: (patientId: string, token?: string) => {
+    return request<AdherenceMetricsResponse>(`/hospital/patients/${patientId}/adherence`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+}
+
+export const feedbackApi = {
+  createFeedback: (
+    input: { category: FeedbackCategory; message: string },
+    token?: string
+  ) => {
+    return request<FeedbackEntry>("/patient/feedback", {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      body: JSON.stringify(input),
+    })
+  },
+
+  getPatientFeedbacks: (token?: string) => {
+    return request<FeedbackEntry[]>("/patient/feedback", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  getHospitalPatientFeedbacks: (patientId: string, token?: string) => {
+    return request<FeedbackEntry[]>(`/hospital/patients/${patientId}/feedback`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  resolveFeedback: (patientId: string, feedbackId: string, token?: string) => {
+    return request<{ message: string }>(
+      `/hospital/patients/${patientId}/feedback/${feedbackId}/resolve`,
+      {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      }
+    )
   },
 }

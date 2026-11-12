@@ -14,6 +14,7 @@ import { FaskesConnectionBanner } from "@/components/patient/faskes-connection-b
 import { ReminderTimeline } from "@/components/patient/reminder-timeline"
 import { ScheduleProgress } from "@/components/patient/schedule-progress"
 import { TodayHeader } from "@/components/patient/today-header"
+import { useAuthStore } from "@/features/auth/store"
 import { selectItemsByKind, selectNextFollowUp, selectPatientPlans } from "@/features/care-plan/selectors"
 import { useCarePlanStore } from "@/features/care-plan/store"
 import { useFeedbackStore } from "@/features/feedback/store"
@@ -31,6 +32,7 @@ import { toDateKey } from "@/lib/date"
 import { useNow } from "@/lib/use-now"
 
 export function TodayView() {
+  const patientSession = useAuthStore((state) => state.patient)
   const { isHydrated, patient, activePlan, activeDoctor } = usePatientContext()
   const plans = useCarePlanStore((state) => state.plans)
   const completions = useFeedbackStore((state) => state.completions)
@@ -42,6 +44,22 @@ export function TodayView() {
   const reminders = selectReminderViews(getTodayReminders(activePlan, now), completions, now)
   const progress = selectDailyProgress(reminders)
   const adherenceDays = selectAdherenceByDay(selectPatientPlans(plans, patient.id), completions, now)
+
+  const handleToggle = (key: string) => {
+    const reminder = reminders.find((r) => r.key === key)
+    toggleCompletion(
+      key,
+      reminder
+        ? {
+            itemId: reminder.itemId,
+            kind: reminder.kind,
+            date: reminder.date,
+            time: reminder.time,
+          }
+        : undefined,
+      patientSession?.token
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -58,12 +76,12 @@ export function TodayView() {
             <NextReminderCard
               reminder={selectNextReminder(reminders)}
               total={reminders.length}
-              onToggle={toggleCompletion}
+              onToggle={handleToggle}
             />
             <section className="space-y-3">
               <h2 className="type-heading">Jadwal hari ini</h2>
               <ScheduleProgress done={progress.done} total={progress.total} />
-              <ReminderTimeline reminders={reminders} onToggle={toggleCompletion} />
+              <ReminderTimeline reminders={reminders} onToggle={handleToggle} />
             </section>
           </div>
           <aside className="min-w-0 space-y-6 lg:col-span-5 xl:col-span-4">
