@@ -116,7 +116,8 @@ export function PatientListView() {
                         <div className="min-w-0">
                           <p className="truncate text-sm font-medium">{patient.name}</p>
                           <p className="type-caption">
-                            {patient.mrn} · {selectPatientAge(patient, now)} th
+                            {patient.mrn}
+                            {selectPatientAge(patient, now) !== null ? ` · ${selectPatientAge(patient, now)} th` : ""}
                           </p>
                         </div>
                       </div>

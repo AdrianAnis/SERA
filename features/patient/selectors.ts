@@ -13,8 +13,11 @@ export function selectPatientHistory(history: HealthHistoryEntry[], patientId: s
     .sort((a, b) => b.date.localeCompare(a.date))
 }
 
-export function selectPatientAge(patient: Patient, today: Date): number {
-  return differenceInYears(today, toDate(patient.birthDate))
+export function selectPatientAge(patient: Patient, today: Date): number | null {
+  if (!patient.birthDate) return null
+  const parsed = toDate(patient.birthDate)
+  if (isNaN(parsed.getTime())) return null
+  return differenceInYears(today, parsed)
 }
 
 export function selectFirstName(patient: Patient): string {

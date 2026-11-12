@@ -105,7 +105,11 @@ export function PatientDetailView({ patientId }: PatientDetailViewProps) {
           <section className="space-y-4 rounded-2xl border bg-card p-5">
             <h2 className="type-subheading">Identitas</h2>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-              <ReadOnlyField id="detail-age" label="Usia" value={`${selectPatientAge(patient, now)} tahun`} />
+              <ReadOnlyField
+                id="detail-age"
+                label="Usia"
+                value={selectPatientAge(patient, now) !== null ? `${selectPatientAge(patient, now)} tahun` : "-"}
+              />
               <ReadOnlyField id="detail-phone" label="Nomor HP" value={patient.phone} />
               <ReadOnlyField id="detail-guardian-name" label="Nama wali" value={patient.guardianName} />
               <ReadOnlyField id="detail-guardian-phone" label="Nomor HP wali" value={patient.guardianPhone} />

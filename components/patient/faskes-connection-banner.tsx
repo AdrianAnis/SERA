@@ -77,6 +77,7 @@ export function FaskesConnectionBanner() {
   if (requests.length === 0) return null
 
   const activeRequest = requests[0]
+  if (!activeRequest) return null
 
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-primary/25 bg-primary/5 p-4 text-foreground shadow-sm animate-in slide-in-from-top-2">
