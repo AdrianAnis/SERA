@@ -2,6 +2,7 @@ import type { Doctor, HealthHistoryEntry, Patient, PatientRecord } from "@/featu
 import type { CarePlan, CarePlanItem } from "@/features/care-plan/types"
 import type { FeedbackCategory, FeedbackEntry } from "@/features/feedback/types"
 import type { ReminderView } from "@/features/reminder/selectors"
+import type { ChatMessage } from "@/features/companion/types"
 import type { DoctorLoginValues, PatientSignInValues, PatientSignUpValues } from "@/features/auth/schema"
 
 export type DailyProgress = {
@@ -673,5 +674,28 @@ export const feedbackApi = {
         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
       }
     )
+  },
+}
+
+export const companionApi = {
+  getHistory: (token?: string) => {
+    return request<ChatMessage[]>("/companion/history", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  chat: (message: string, token?: string) => {
+    return request<ChatMessage>("/companion/chat", {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      body: JSON.stringify({ message }),
+    })
+  },
+
+  reportMessage: (messageId: string, token?: string) => {
+    return request<{ message: string }>(`/companion/messages/${messageId}/report`, {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
   },
 }

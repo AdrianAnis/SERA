@@ -14,44 +14,46 @@ import { useCompanionStore } from "@/features/companion/store"
 import { selectFirstName } from "@/features/patient/selectors"
 import { usePatientStore } from "@/features/patient/store"
 import { usePatientContext } from "@/features/patient/use-patient-context"
+import { useAuthStore } from "@/features/auth/store"
 import { routes } from "@/lib/routes"
-
-const TYPING_DELAY_MS = 800
 
 export function CompanionView() {
   const { patient, activePlan } = usePatientContext()
+  const patientSession = useAuthStore((state) => state.patient)
   const doctors = usePatientStore((state) => state.doctors)
   const threads = useCompanionStore((state) => state.threads)
   const askQuestion = useCompanionStore((state) => state.askQuestion)
   const reportMessage = useCompanionStore((state) => state.reportMessage)
+  const fetchHistory = useCompanionStore((state) => state.fetchHistory)
   const [pendingQuestion, setPendingQuestion] = useState<string | null>(null)
-  const timerRef = useRef<number | null>(null)
   const bottomRef = useRef<HTMLDivElement | null>(null)
 
   const thread = patient ? selectThread(threads, patient.id) : []
   const isEmpty = thread.length === 0 && pendingQuestion === null
 
+  // Fetch companion chat history from backend on mount or when patient session changes
+  useEffect(() => {
+    if (patient?.id && patientSession?.token) {
+      void fetchHistory(patient.id, patientSession.token)
+    }
+  }, [patient?.id, patientSession?.token, fetchHistory])
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" })
   }, [thread.length, pendingQuestion])
 
-  useEffect(
-    () => () => {
-      if (timerRef.current !== null) window.clearTimeout(timerRef.current)
-    },
-    [],
-  )
-
   if (!patient) return null
 
-  function sendQuestion(question: string): void {
+  async function sendQuestion(question: string): Promise<void> {
     const trimmed = question.trim()
     if (!patient || !trimmed || pendingQuestion !== null) return
     setPendingQuestion(trimmed)
-    timerRef.current = window.setTimeout(() => {
-      askQuestion(patient.id, trimmed, activePlan)
+
+    try {
+      await askQuestion(patient.id, trimmed, activePlan, patientSession?.token)
+    } finally {
       setPendingQuestion(null)
-    }, TYPING_DELAY_MS)
+    }
   }
 
   return (
@@ -74,15 +76,15 @@ export function CompanionView() {
             <CompanionEmptyState firstName={selectFirstName(patient)} isDisabled={pendingQuestion !== null} onSelect={sendQuestion} />
           ) : null}
           {thread.map((message) => (
-            <ChatBubble key={message.id} message={message} doctors={doctors} onReport={(messageId) => reportMessage(patient.id, messageId)} />
+            <ChatBubble
+              key={message.id}
+              message={message}
+              doctors={doctors}
+              onReport={(messageId) => reportMessage(patient.id, messageId, patientSession?.token)}
+            />
           ))}
           {pendingQuestion ? (
-            <>
-              <div className="flex justify-end">
-                <div className="max-w-xs rounded-2xl rounded-br-md bg-primary px-4 py-3 text-primary-foreground sm:max-w-md">{pendingQuestion}</div>
-              </div>
-              <p className="type-caption">Companion sedang mengetik...</p>
-            </>
+            <p className="type-caption">Companion sedang mengetik...</p>
           ) : null}
           <div ref={bottomRef} />
         </div>

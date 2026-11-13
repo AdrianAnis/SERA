@@ -19,6 +19,10 @@ function getDoctorShortName(doctors: Doctor[], doctorId: string): string {
   return name.split(",")[0] ?? name
 }
 
+function cleanMarkdownStars(text: string): string {
+  return text.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*(.*?)\*/g, "$1")
+}
+
 export function ChatBubble({ message, doctors, onReport }: ChatBubbleProps) {
   const isPatient = message.role === "patient"
   const escalationScope = !isPatient && message.scope !== "in-scope" ? message.scope : null
@@ -33,7 +37,7 @@ export function ChatBubble({ message, doctors, onReport }: ChatBubbleProps) {
             isPatient ? "rounded-br-md bg-primary text-primary-foreground" : "rounded-bl-md border bg-card",
           )}
         >
-          {message.content}
+          {cleanMarkdownStars(message.content)}
         </div>
       </div>
 
