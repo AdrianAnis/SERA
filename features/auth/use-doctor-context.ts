@@ -13,8 +13,21 @@ export type DoctorContext = {
 
 export function useDoctorContext(): DoctorContext {
   const isHydrated = useHydrated()
-  const doctorId = useAuthStore((state) => state.doctor?.userId)
+  const doctorSession = useAuthStore((state) => state.doctor)
+  const doctorId = doctorSession?.doctorId || doctorSession?.userId
   const doctors = usePatientStore((state) => state.doctors)
 
-  return { isHydrated, doctor: doctorId ? selectDoctorById(doctors, doctorId) : undefined }
+  let doctor = doctorId ? selectDoctorById(doctors, doctorId) : undefined
+
+  if (!doctor && doctorSession) {
+    doctor = {
+      id: doctorSession.doctorId || doctorSession.userId,
+      name: doctorSession.name || "Dr. Haruka Tanaka, MD",
+      specialty: "Internal Medicine",
+      email: doctorSession.email || "haruka.tanaka@gmail.com",
+      hospital: "Sakura General Hospital",
+    }
+  }
+
+  return { isHydrated, doctor }
 }

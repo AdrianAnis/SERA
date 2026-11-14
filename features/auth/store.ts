@@ -7,16 +7,21 @@ const AUTH_STORAGE_KEY = "hc:auth"
 
 type Surface = "doctor" | "patient"
 
-type Session = {
+export type Session = {
   userId: string
+  patientId?: string | null
+  doctorId?: string | null
   signedInAt: string
+  token?: string
+  name?: string
+  email?: string
 }
 
 type AuthState = {
   doctor: Session | null
   patient: Session | null
-  loginDoctor: () => void
-  loginPatient: () => void
+  loginDoctor: (session?: Partial<Session>) => void
+  loginPatient: (session?: Partial<Session>) => void
   logout: (surface: Surface) => void
 }
 
@@ -25,16 +30,40 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       doctor: null,
       patient: null,
-      loginDoctor: () => set({ doctor: { userId: DEMO_DOCTOR_ID, signedInAt: new Date().toISOString() } }),
-      loginPatient: () => set({ patient: { userId: DEMO_PATIENT_ID, signedInAt: new Date().toISOString() } }),
+      loginDoctor: (session) =>
+        set({
+          doctor: {
+            userId: session?.userId || DEMO_DOCTOR_ID,
+            doctorId: session?.doctorId,
+            token: session?.token,
+            name: session?.name,
+            email: session?.email,
+            signedInAt: session?.signedInAt || new Date().toISOString(),
+          },
+        }),
+      loginPatient: (session) =>
+        set({
+          patient: {
+            userId: session?.userId || DEMO_PATIENT_ID,
+            patientId: session?.patientId,
+            token: session?.token,
+            name: session?.name,
+            email: session?.email,
+            signedInAt: session?.signedInAt || new Date().toISOString(),
+          },
+        }),
       logout: (surface) => set(surface === "doctor" ? { doctor: null } : { patient: null }),
     }),
     {
       name: AUTH_STORAGE_KEY,
-      version: 3,
+      version: 4,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ doctor: state.doctor, patient: state.patient }),
       skipHydration: true,
+      migrate: (persistedState: any) => ({
+        doctor: persistedState?.doctor || null,
+        patient: persistedState?.patient || null,
+      }),
     },
   ),
 )
