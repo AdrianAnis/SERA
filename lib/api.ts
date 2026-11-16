@@ -4,6 +4,8 @@ import type { FeedbackCategory, FeedbackEntry } from "@/features/feedback/types"
 import type { ReminderView } from "@/features/reminder/selectors"
 import type { ChatMessage } from "@/features/companion/types"
 import type { DoctorLoginValues, PatientSignInValues, PatientSignUpValues } from "@/features/auth/schema"
+import type { DailyReadings, MetricTrend, WearableConnection, WearablePeriod } from "@/features/wearable/types"
+import type { WearableMetric } from "@/features/wearable/schema"
 
 export type DailyProgress = {
   done: number
@@ -695,6 +697,91 @@ export const companionApi = {
   reportMessage: (messageId: string, token?: string) => {
     return request<{ message: string }>(`/companion/messages/${messageId}/report`, {
       method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+}
+
+export const wearableApi = {
+  getStatus: (token?: string) => {
+    return request<{ isConnected: boolean; connection: WearableConnection | null }>("/patient/wearable/status", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  connect: (deviceId = "sera-1", token?: string) => {
+    const cleanId = deviceId.trim().toLowerCase()
+    const normalizedId = cleanId.includes("sera-") ? cleanId : `sera-${cleanId.replace(/[^0-9]/g, "") || "1"}`
+    return request<WearableConnection>("/patient/wearable/connect", {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      body: JSON.stringify({ deviceName: `HUAWEI Band 9 (${normalizedId})`, deviceModel: normalizedId }),
+    })
+  },
+
+  disconnect: (token?: string) => {
+    return request<{ message: string }>("/patient/wearable/disconnect", {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  sync: (
+    data: {
+      date?: string
+      deviceName?: string
+      steps?: { total: number; hourly: number[] }
+      heartRate?: { resting: number; min: number; max: number; hourly: number[] }
+      sleep?: {
+        totalMinutes: number
+        napMinutes: number
+        stages: { deep: number; light: number; rem: number; awake: number }
+        bedtime: string
+        wakeTime: string
+      }
+      spo2?: { average: number; min: number; max: number; readings: Array<{ time: string; value: number }> }
+    },
+    token?: string
+  ) => {
+    return request<DailyReadings>("/patient/wearable/sync", {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      body: JSON.stringify(data),
+    })
+  },
+
+  getDaily: (date?: string, token?: string) => {
+    const query = date ? `?date=${encodeURIComponent(date)}` : ""
+    return request<DailyReadings>(`/patient/wearable/daily${query}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  getTrends: (
+    period: WearablePeriod = "week",
+    metric?: WearableMetric,
+    anchor?: string,
+    token?: string
+  ) => {
+    const params = new URLSearchParams()
+    if (period) params.set("period", period)
+    if (metric) params.set("metric", metric)
+    if (anchor) params.set("anchor", anchor)
+    const qs = params.toString() ? `?${params.toString()}` : ""
+    return request<MetricTrend | Record<WearableMetric, MetricTrend>>(`/patient/wearable/trends${qs}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  getHospitalMonitoring: (patientId: string, anchor?: string, token?: string) => {
+    const query = anchor ? `?anchor=${encodeURIComponent(anchor)}` : ""
+    return request<{
+      patientId: string
+      patientName: string
+      connection: WearableConnection | null
+      latestDate: string
+      metrics: Record<WearableMetric, MetricTrend>
+    }>(`/hospital/patients/${patientId}/monitoring${query}`, {
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     })
   },

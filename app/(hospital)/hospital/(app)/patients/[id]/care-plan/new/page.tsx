@@ -4,7 +4,7 @@ import { CarePlanBuilderView } from "@/components/hospital/care-plan-builder-vie
 
 export const metadata: Metadata = { title: "Care plan" }
 
-export default async function CarePlanBuilderPage({ params }: PageProps<"/hospital/patients/[id]/care-plan/new">) {
+export default async function CarePlanBuilderPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   return <CarePlanBuilderView patientId={id} />
 }

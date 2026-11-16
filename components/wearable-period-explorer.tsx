@@ -1,16 +1,18 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { WearableChart } from "@/components/wearable-chart"
 import { WearableChartLegend } from "@/components/wearable-chart-legend"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useAuthStore } from "@/features/auth/store"
 import { WEARABLE_METRIC_LABEL, WEARABLE_PERIOD_LABEL, WEARABLE_PERIOD_ORDER } from "@/features/wearable/labels"
 import type { WearableMetric } from "@/features/wearable/schema"
 import { selectMetricTrend, selectPeriodLabel, selectShiftedAnchor } from "@/features/wearable/trend-selectors"
-import type { WearablePeriod } from "@/features/wearable/types"
+import type { MetricTrend, WearablePeriod } from "@/features/wearable/types"
+import { wearableApi } from "@/lib/api"
 import { toDateKey } from "@/lib/date"
 import { useNow } from "@/lib/use-now"
 
@@ -28,7 +30,38 @@ export function WearablePeriodExplorer({ patientId, metric }: WearablePeriodExpl
   const [period, setPeriod] = useState<WearablePeriod>("day")
   const [anchorKey, setAnchorKey] = useState(() => toDateKey(new Date()))
   const todayKey = toDateKey(now)
-  const trend = selectMetricTrend(patientId, metric, period, anchorKey, now)
+  const patientSession = useAuthStore((state) => state.patient)
+  const doctorSession = useAuthStore((state) => state.doctor)
+  const token = patientSession?.token || doctorSession?.token
+
+  const [backendTrend, setBackendTrend] = useState<MetricTrend | null>(null)
+
+  useEffect(() => {
+    let isCancelled = false
+    async function loadTrend() {
+      try {
+        if (doctorSession?.token) {
+          const res = await wearableApi.getHospitalMonitoring(patientId, anchorKey, doctorSession.token)
+          if (!isCancelled && res?.metrics?.[metric]) {
+            setBackendTrend(res.metrics[metric])
+          }
+        } else if (patientSession?.token) {
+          const res = await wearableApi.getTrends(period, metric, anchorKey, patientSession.token)
+          if (!isCancelled && res) {
+            setBackendTrend(res as MetricTrend)
+          }
+        }
+      } catch (err) {
+        console.error("[WearablePeriodExplorer] Failed to load trend from backend:", err)
+      }
+    }
+    void loadTrend()
+    return () => {
+      isCancelled = true
+    }
+  }, [patientId, metric, period, anchorKey, patientSession?.token, doctorSession?.token])
+
+  const trend = backendTrend ?? selectMetricTrend(patientId, metric, period, anchorKey, now)
 
   return (
     <div className="space-y-5 p-5">
@@ -43,7 +76,13 @@ export function WearablePeriodExplorer({ patientId, metric }: WearablePeriodExpl
       </Tabs>
 
       <div className="flex items-center justify-between gap-3">
-        <Button type="button" variant="outline" size="icon" aria-label="Periode sebelumnya" onClick={() => setAnchorKey(selectShiftedAnchor(period, anchorKey, -1, todayKey))}>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          aria-label="Periode sebelumnya"
+          onClick={() => setAnchorKey(selectShiftedAnchor(period, anchorKey, -1, todayKey))}
+        >
           <ChevronLeft />
         </Button>
         <p className="text-sm font-medium" aria-live="polite">
@@ -73,7 +112,11 @@ export function WearablePeriodExplorer({ patientId, metric }: WearablePeriodExpl
         ))}
       </dl>
 
-      <div className="h-72 w-full" role="img" aria-label={`Grafik ${WEARABLE_METRIC_LABEL[metric]} periode ${WEARABLE_PERIOD_LABEL[period].toLowerCase()}`}>
+      <div
+        className="h-72 w-full"
+        role="img"
+        aria-label={`Grafik ${WEARABLE_METRIC_LABEL[metric]} periode ${WEARABLE_PERIOD_LABEL[period].toLowerCase()}`}
+      >
         <WearableChart metric={metric} period={period} points={trend.points} />
       </div>
       <WearableChartLegend metric={metric} period={period} />
