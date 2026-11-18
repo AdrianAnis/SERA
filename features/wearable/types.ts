@@ -3,6 +3,9 @@ export type WearablePeriod = "day" | "week" | "month" | "year"
 export type WearableConnection = {
   deviceName: string
   connectedAt: string
+  deviceModel?: string | null
+  lastSyncAt?: string | null
+  isConnected?: boolean
 }
 
 type SleepStages = {

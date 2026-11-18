@@ -35,3 +35,10 @@ export type Doctor = {
   email: string
   hospital: string
 }
+
+export type PatientRecord = {
+  patient: Patient
+  doctor?: Doctor
+  healthHistory: HealthHistoryEntry[]
+}
+

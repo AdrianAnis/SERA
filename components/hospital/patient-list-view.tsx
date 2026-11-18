@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
 import Link from "next/link"
 import { ChevronRight, Search } from "lucide-react"
 
@@ -34,11 +35,17 @@ function isStatusFilter(value: string): value is StatusFilter {
 export function PatientListView() {
   const isHydrated = useHydrated()
   const patients = usePatientStore((state) => state.patients)
+  const fetchPatients = usePatientStore((state) => state.fetchPatients)
   const plans = useCarePlanStore((state) => state.plans)
   const completions = useFeedbackStore((state) => state.completions)
   const now = useNow()
   const [query, setQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all")
+
+  useEffect(() => {
+    void fetchPatients()
+  }, [fetchPatients])
+
 
   if (!isHydrated) return <HospitalPageSkeleton />
 
@@ -109,7 +116,8 @@ export function PatientListView() {
                         <div className="min-w-0">
                           <p className="truncate text-sm font-medium">{patient.name}</p>
                           <p className="type-caption">
-                            {patient.mrn} · {selectPatientAge(patient, now)} th
+                            {patient.mrn}
+                            {selectPatientAge(patient, now) !== null ? ` · ${selectPatientAge(patient, now)} th` : ""}
                           </p>
                         </div>
                       </div>

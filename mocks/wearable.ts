@@ -1,7 +1,7 @@
 import type { DailyReadings, WearableConnection } from "@/features/wearable/types"
 import { daysFromToday } from "@/lib/date"
 
-export const DEFAULT_WEARABLE_DEVICE_NAME = "HUAWEI WATCH GT 4"
+export const DEFAULT_WEARABLE_DEVICE_NAME = "HUAWEI Band 9"
 
 type WearableProfile = {
   baseSteps: number
@@ -46,12 +46,40 @@ function sum(values: number[]): number {
 }
 
 export function buildDailyReadings(patientId: string, dateKey: string): DailyReadings {
+  if (patientId === "p-004") {
+    return {
+      date: dateKey,
+      steps: { total: 0, hourly: Array(24).fill(0) },
+      heartRate: {
+        resting: 0,
+        min: 0,
+        max: 0,
+        hourly: Array(24).fill(0),
+      },
+      sleep: {
+        totalMinutes: 0,
+        napMinutes: 0,
+        stages: { deep: 0, light: 0, rem: 0, awake: 0 },
+        bedtime: "-",
+        wakeTime: "-",
+      },
+      spo2: {
+        average: 0,
+        min: 0,
+        max: 0,
+        readings: [],
+      },
+    }
+  }
+
   const random = createRandom(`${patientId}:${dateKey}`)
   const profile = WEARABLE_PROFILES[patientId] ?? DEFAULT_PROFILE
 
   const dayFactor = 0.7 + random() * 0.6
   const weightTotal = sum(HOURLY_STEP_WEIGHTS)
-  const hourlySteps = HOURS.map((hour) => Math.round(((profile.baseSteps * dayFactor * (HOURLY_STEP_WEIGHTS[hour] ?? 0)) / weightTotal) * (0.8 + random() * 0.4)))
+  const hourlySteps = HOURS.map((hour) =>
+    Math.round(((profile.baseSteps * dayFactor * (HOURLY_STEP_WEIGHTS[hour] ?? 0)) / weightTotal) * (0.8 + random() * 0.4))
+  )
 
   const hourlyHeartRate = HOURS.map((hour) => {
     const base = profile.restingHeartRate + (hour < 6 ? -6 : 6)
@@ -64,7 +92,10 @@ export function buildDailyReadings(patientId: string, dateKey: string): DailyRea
   const rem = Math.round(totalSleep * (0.2 + random() * 0.05))
   const bedtimeMinutes = 22 * 60 + Math.round(random() * 75)
 
-  const spo2Readings = SPO2_READING_TIMES.map((time) => ({ time, value: Math.min(100, Math.round(profile.baseSpo2 + random() * 3 - 1.5)) }))
+  const spo2Readings = SPO2_READING_TIMES.map((time) => ({
+    time,
+    value: Math.min(100, Math.round(profile.baseSpo2 + random() * 3 - 1.5)),
+  }))
   const spo2Values = spo2Readings.map((reading) => reading.value)
 
   return {
@@ -93,6 +124,7 @@ export function buildDailyReadings(patientId: string, dateKey: string): DailyRea
 }
 
 export const mockWearableConnections: Record<string, WearableConnection> = {
-  "p-001": { deviceName: DEFAULT_WEARABLE_DEVICE_NAME, connectedAt: daysFromToday(-60, "09:00") },
-  "p-002": { deviceName: "HUAWEI WATCH FIT 3", connectedAt: daysFromToday(-30, "10:30") },
+  "p-001": { deviceName: "HUAWEI Band 9", connectedAt: "2026-09-15T08:30:00.000Z" },
+  "p-002": { deviceName: "HUAWEI Band 9", connectedAt: "2026-10-01T10:15:00.000Z" },
+  "p-003": { deviceName: "HUAWEI Band 9", connectedAt: "2026-10-15T09:00:00.000Z" },
 }

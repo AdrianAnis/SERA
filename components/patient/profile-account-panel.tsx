@@ -41,21 +41,32 @@ function FieldGroup({ title, children }: FieldGroupProps) {
 }
 
 export function ProfileAccountPanel({ patient, doctor, now }: ProfileAccountPanelProps) {
+  const isUnlinked = patient.mrn === "UNLINKED" || !patient.mrn || patient.mrn === "-"
+  const age = selectPatientAge(patient, now)
+
   return (
     <div className="space-y-8">
       <FieldGroup title="Identitas">
         <ReadOnlyField id="profile-name" label="Nama lengkap" value={patient.name} />
-        <ReadOnlyField id="profile-mrn" label="Nomor rekam medis" value={patient.mrn} />
-        <ReadOnlyField id="profile-age" label="Usia" value={`${selectPatientAge(patient, now)} tahun`} />
-        <ReadOnlyField id="profile-phone" label="Nomor HP" value={patient.phone} />
+        <ReadOnlyField id="profile-mrn" label="Nomor rekam medis" value={isUnlinked ? "Belum terhubung" : patient.mrn} />
+        <ReadOnlyField id="profile-age" label="Usia" value={age !== null ? `${age} tahun` : "-"} />
+        <ReadOnlyField id="profile-phone" label="Nomor HP" value={patient.phone || "-"} />
       </FieldGroup>
       <FieldGroup title="Wali">
-        <ReadOnlyField id="profile-guardian-name" label="Nama wali" value={patient.guardianName} />
-        <ReadOnlyField id="profile-guardian-phone" label="Nomor HP wali" value={patient.guardianPhone} />
+        <ReadOnlyField id="profile-guardian-name" label="Nama wali" value={patient.guardianName || "-"} />
+        <ReadOnlyField id="profile-guardian-phone" label="Nomor HP wali" value={patient.guardianPhone || "-"} />
       </FieldGroup>
       <FieldGroup title="Kesehatan">
-        <ReadOnlyField id="profile-allergies" label="Alergi" value={patient.allergies.length > 0 ? patient.allergies.join(", ") : "Tidak ada"} />
-        <ReadOnlyField id="profile-conditions" label="Kondisi" value={patient.conditions.join(", ")} />
+        <ReadOnlyField
+          id="profile-allergies"
+          label="Alergi"
+          value={isUnlinked ? "-" : patient.allergies.length > 0 ? patient.allergies.join(", ") : "Tidak ada"}
+        />
+        <ReadOnlyField
+          id="profile-conditions"
+          label="Kondisi"
+          value={patient.conditions.length > 0 ? patient.conditions.join(", ") : "-"}
+        />
       </FieldGroup>
       <FieldGroup title="Perawatan">
         <ReadOnlyField id="profile-hospital" label="Rumah sakit" value={doctor?.hospital ?? "-"} />

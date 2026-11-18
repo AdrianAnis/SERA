@@ -1,10 +1,12 @@
 "use client"
 
+import { useEffect } from "react"
 import { AdherenceLineChart } from "@/components/adherence-line-chart"
 import { AdherenceTrendSummaryCards } from "@/components/adherence-trend-summary"
 import { FeedbackForm } from "@/components/patient/feedback-form"
 import { WearableOverview } from "@/components/patient/wearable-overview"
 import { Badge } from "@/components/ui/badge"
+import { useAuthStore } from "@/features/auth/store"
 import { selectPatientPlans } from "@/features/care-plan/selectors"
 import { useCarePlanStore } from "@/features/care-plan/store"
 import { FEEDBACK_CATEGORY_LABEL, FEEDBACK_STATUS_LABEL } from "@/features/feedback/labels"
@@ -19,11 +21,19 @@ type ActivitySectionProps = {
 }
 
 export function ActivitySection({ patientId }: ActivitySectionProps) {
+  const patientSession = useAuthStore((state) => state.patient)
   const plans = useCarePlanStore((state) => state.plans)
   const completions = useFeedbackStore((state) => state.completions)
   const entries = useFeedbackStore((state) => state.entries)
   const addFeedback = useFeedbackStore((state) => state.addFeedback)
+  const fetchPatientFeedbacks = useFeedbackStore((state) => state.fetchPatientFeedbacks)
   const now = useNow()
+
+  useEffect(() => {
+    if (patientSession?.token) {
+      void fetchPatientFeedbacks(patientSession.token)
+    }
+  }, [patientSession?.token, fetchPatientFeedbacks])
 
   const trend = selectAdherenceTrend(selectPatientPlans(plans, patientId), completions, now)
   const feedback = selectPatientFeedback(entries, patientId)
@@ -46,7 +56,7 @@ export function ActivitySection({ patientId }: ActivitySectionProps) {
 
         <div id="lapor-keluhan" className="scroll-mt-24">
           <h3 className="mb-4 type-subheading">Lapor kendala atau keluhan</h3>
-          <FeedbackForm onSubmit={(values) => addFeedback({ patientId, ...values })} />
+          <FeedbackForm onSubmit={(values) => void addFeedback({ patientId, ...values }, patientSession?.token)} />
         </div>
       </div>
 

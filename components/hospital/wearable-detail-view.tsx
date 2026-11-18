@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { ChevronLeft } from "lucide-react"
 
@@ -8,11 +9,13 @@ import { PageHeader } from "@/components/hospital/page-header"
 import { WearableEmptyState } from "@/components/hospital/wearable-empty-state"
 import { WearablePeriodExplorer } from "@/components/wearable-period-explorer"
 import { Button } from "@/components/ui/button"
+import { useAuthStore } from "@/features/auth/store"
 import { usePatientRecord } from "@/features/patient/use-patient-record"
 import { WEARABLE_METRIC_LABEL } from "@/features/wearable/labels"
 import type { WearableMetric } from "@/features/wearable/schema"
 import { selectConnection } from "@/features/wearable/selectors"
 import { useWearableStore } from "@/features/wearable/store"
+import { wearableApi } from "@/lib/api"
 import { routes } from "@/lib/routes"
 
 type WearableDetailViewProps = {
@@ -22,19 +25,45 @@ type WearableDetailViewProps = {
 
 export function WearableDetailView({ patientId, metric }: WearableDetailViewProps) {
   const { isHydrated, patient } = usePatientRecord(patientId)
+  const doctorSession = useAuthStore((state) => state.doctor)
   const connections = useWearableStore((state) => state.connections)
+  const connection = selectConnection(connections, patientId)
+
+  const [deviceConnected, setDeviceConnected] = useState<boolean | null>(null)
+  const [deviceName, setDeviceName] = useState<string | null>(null)
+
+  useEffect(() => {
+    let isCancelled = false
+    async function checkMonitoring() {
+      if (!doctorSession?.token || !patientId) return
+      try {
+        const res = await wearableApi.getHospitalMonitoring(patientId, undefined, doctorSession.token)
+        if (!isCancelled && res) {
+          setDeviceConnected(Boolean(res.connection && res.connection.isConnected))
+          setDeviceName(res.connection?.deviceName ?? null)
+        }
+      } catch (err) {
+        console.error("[WearableDetailView] Failed to check monitoring from backend:", err)
+      }
+    }
+    void checkMonitoring()
+    return () => {
+      isCancelled = true
+    }
+  }, [patientId, doctorSession?.token])
 
   if (!isHydrated) return <HospitalPageSkeleton />
 
   if (!patient) return <PageHeader title="Pasien tidak ditemukan" description="Data smartwatch tidak bisa dibuka tanpa data pasien." />
 
-  const connection = selectConnection(connections, patientId)
+  const hasConnection = deviceConnected !== null ? deviceConnected : Boolean(connection)
+  const activeDeviceName = deviceName || connection?.deviceName
 
   return (
     <>
       <PageHeader
         title={WEARABLE_METRIC_LABEL[metric]}
-        description={connection ? `${patient.name} · ${connection.deviceName}` : patient.name}
+        description={hasConnection && activeDeviceName ? `${patient.name} · ${activeDeviceName}` : patient.name}
         actions={
           <Button asChild variant="outline">
             <Link href={routes.hospital.monitoring(patientId)}>
@@ -46,7 +75,7 @@ export function WearableDetailView({ patientId, metric }: WearableDetailViewProp
       />
       <div className="p-4 md:p-6">
         <section className="rounded-2xl border bg-card">
-          {connection ? <WearablePeriodExplorer patientId={patientId} metric={metric} /> : <WearableEmptyState patientName={patient.name} />}
+          {hasConnection ? <WearablePeriodExplorer patientId={patientId} metric={metric} /> : <WearableEmptyState patientName={patient.name} />}
         </section>
       </div>
     </>

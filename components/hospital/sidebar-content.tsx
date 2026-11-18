@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
-import { CalendarClock, LayoutDashboard, LogOut, Users, type LucideIcon } from "lucide-react"
+import { CalendarClock, ClipboardCheck, LayoutDashboard, LogOut, Users, type LucideIcon } from "lucide-react"
 
 import { BrandLogo } from "@/components/brand-logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -20,6 +20,7 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { href: routes.hospital.dashboard, label: "Dashboard", icon: LayoutDashboard },
+  { href: routes.hospital.requests, label: "Permintaan", icon: ClipboardCheck },
   { href: routes.hospital.patientList, label: "Pasien", icon: Users },
   { href: routes.hospital.consultations, label: "Jadwal Konsultasi", icon: CalendarClock },
 ]

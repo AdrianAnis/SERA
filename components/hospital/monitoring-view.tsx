@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import Link from "next/link"
 import { ChevronLeft } from "lucide-react"
 
@@ -11,6 +12,7 @@ import { HospitalPageSkeleton } from "@/components/hospital/hospital-page-skelet
 import { PageHeader } from "@/components/hospital/page-header"
 import { StatusDot } from "@/components/status-dot"
 import { Button } from "@/components/ui/button"
+import { useAuthStore } from "@/features/auth/store"
 import { FEEDBACK_CATEGORY_LABEL, FEEDBACK_STATUS_LABEL } from "@/features/feedback/labels"
 import { selectPatientFeedback } from "@/features/feedback/selectors"
 import { useFeedbackStore } from "@/features/feedback/store"
@@ -27,12 +29,20 @@ type MonitoringViewProps = {
 }
 
 export function MonitoringView({ patientId }: MonitoringViewProps) {
+  const doctorSession = useAuthStore((state) => state.doctor)
   const { isHydrated, patient, activePlan, planHistory } = usePatientRecord(patientId)
   const completions = useFeedbackStore((state) => state.completions)
   const entries = useFeedbackStore((state) => state.entries)
   const resolveFeedback = useFeedbackStore((state) => state.resolveFeedback)
+  const fetchHospitalFeedbacks = useFeedbackStore((state) => state.fetchHospitalFeedbacks)
   const threads = useCompanionStore((state) => state.threads)
   const now = useNow()
+
+  useEffect(() => {
+    if (patientId) {
+      void fetchHospitalFeedbacks(patientId, doctorSession?.token)
+    }
+  }, [patientId, doctorSession?.token, fetchHospitalFeedbacks])
 
   if (!isHydrated) return <HospitalPageSkeleton />
 
@@ -93,7 +103,7 @@ export function MonitoringView({ patientId }: MonitoringViewProps) {
                     <StatusDot tone={entry.status === "open" ? "warning" : "success"} label={FEEDBACK_STATUS_LABEL[entry.status]} />
                   </div>
                   {entry.status === "open" ? (
-                    <Button variant="outline" onClick={() => resolveFeedback(entry.id)}>
+                    <Button variant="outline" onClick={() => void resolveFeedback(entry.id, patientId, doctorSession?.token)}>
                       Tandai sudah ditinjau
                     </Button>
                   ) : null}

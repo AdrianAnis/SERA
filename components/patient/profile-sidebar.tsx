@@ -25,7 +25,7 @@ export function ProfileSidebar({ patient, activeSection, onSelect, onLogout }: P
         </Avatar>
         <div className="space-y-0.5">
           <p className="type-subheading">{patient.name}</p>
-          <p className="type-caption">{patient.mrn}</p>
+          <p className="type-caption">{patient.mrn === "UNLINKED" ? "Belum terhubung" : patient.mrn}</p>
         </div>
       </div>
 
