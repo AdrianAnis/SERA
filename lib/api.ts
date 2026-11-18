@@ -166,6 +166,12 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   }
 }
 
+function disabledPatientEndpoint<T>(path: string, ...args: unknown[]): Promise<T> {
+  return Promise.reject(
+    new ApiError("Fitur pasien belum tersedia di versi web.", `[Disabled] ${path} dipanggil dengan ${args.length} argumen`, 0)
+  )
+}
+
 export const authApi = {
   /**
    * Login Dokter ke Hospital Platform
@@ -181,20 +187,22 @@ export const authApi = {
    * Login Pasien ke SERA Patient App
    */
   loginPatient: (credentials: PatientSignInValues) => {
-    return request<AuthResponse>("/auth/patient/login", {
-      method: "POST",
-      body: JSON.stringify(credentials),
-    })
+    // return request<AuthResponse>("/auth/patient/login", {
+    //   method: "POST",
+    //   body: JSON.stringify(credentials),
+    // })
+    return disabledPatientEndpoint<AuthResponse>("/auth/patient/login", credentials)
   },
 
   /**
    * Registrasi Pasien di SERA Patient App
    */
   registerPatient: (data: PatientSignUpValues) => {
-    return request<AuthResponse>("/auth/patient/register", {
-      method: "POST",
-      body: JSON.stringify(data),
-    })
+    // return request<AuthResponse>("/auth/patient/register", {
+    //   method: "POST",
+    //   body: JSON.stringify(data),
+    // })
+    return disabledPatientEndpoint<AuthResponse>("/auth/patient/register", data)
   },
 
   /**
@@ -361,21 +369,26 @@ export const connectionApi = {
    * Ambil daftar permintaan penghubungan faskes yang masuk ke pasien
    */
   getPendingRequests: (token?: string) => {
-    return request<FaskesLinkRequest[]>("/patient/link-requests", {
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    })
+    // return request<FaskesLinkRequest[]>("/patient/link-requests", {
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    // })
+    return disabledPatientEndpoint<FaskesLinkRequest[]>("/patient/link-requests", token)
   },
 
   /**
    * Pasien menyetujui permintaan penghubungan faskes
    */
   approveLinkRequest: (requestId: string, token?: string) => {
-    return request<{ patientId: string; patientName: string; mrn: string; doctorName?: string; hospitalName?: string }>(
+    // return request<{ patientId: string; patientName: string; mrn: string; doctorName?: string; hospitalName?: string }>(
+    //   `/patient/link-requests/${requestId}/approve`,
+    //   {
+    //     method: "POST",
+    //     headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    //   }
+    // )
+    return disabledPatientEndpoint<{ patientId: string; patientName: string; mrn: string; doctorName?: string; hospitalName?: string }>(
       `/patient/link-requests/${requestId}/approve`,
-      {
-        method: "POST",
-        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-      }
+      token
     )
   },
 
@@ -383,33 +396,40 @@ export const connectionApi = {
    * Pasien menolak permintaan penghubungan faskes
    */
   rejectLinkRequest: (requestId: string, token?: string) => {
-    return request<{ success: boolean; message: string }>(
-      `/patient/link-requests/${requestId}/reject`,
-      {
-        method: "POST",
-        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-      }
-    )
+    // return request<{ success: boolean; message: string }>(
+    //   `/patient/link-requests/${requestId}/reject`,
+    //   {
+    //     method: "POST",
+    //     headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    //   }
+    // )
+    return disabledPatientEndpoint<{ success: boolean; message: string }>(`/patient/link-requests/${requestId}/reject`, token)
   },
 
   /**
    * Verifikasi token undangan aktivasi
    */
   verifyInvitation: (token: string) => {
-    return request<PatientInvitation>(`/patient/invitations/verify?token=${encodeURIComponent(token)}`)
+    // return request<PatientInvitation>(`/patient/invitations/verify?token=${encodeURIComponent(token)}`)
+    return disabledPatientEndpoint<PatientInvitation>("/patient/invitations/verify", token)
   },
 
   /**
    * Pasien menerima token undangan dan menautkan profil
    */
   acceptInvitation: (token: string, authToken?: string) => {
-    return request<{ patientId: string; patientName: string; mrn: string; hospitalName?: string }>(
+    // return request<{ patientId: string; patientName: string; mrn: string; hospitalName?: string }>(
+    //   "/patient/invitations/accept",
+    //   {
+    //     method: "POST",
+    //     headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
+    //     body: JSON.stringify({ token }),
+    //   }
+    // )
+    return disabledPatientEndpoint<{ patientId: string; patientName: string; mrn: string; hospitalName?: string }>(
       "/patient/invitations/accept",
-      {
-        method: "POST",
-        headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
-        body: JSON.stringify({ token }),
-      }
+      token,
+      authToken
     )
   },
 }
@@ -467,31 +487,35 @@ export type AcceptAndCreateRecordInput = {
 
 export const consultationApi = {
   getDoctors: (query?: string, token?: string) => {
-    const url = query ? `/patient/doctors?q=${encodeURIComponent(query)}` : "/patient/doctors"
-    return request<DoctorWithStatus[]>(url, {
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    })
+    // const url = query ? `/patient/doctors?q=${encodeURIComponent(query)}` : "/patient/doctors"
+    // return request<DoctorWithStatus[]>(url, {
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    // })
+    return disabledPatientEndpoint<DoctorWithStatus[]>("/patient/doctors", query, token)
   },
 
   getDoctorDetail: (doctorId: string, token?: string) => {
-    return request<DoctorWithStatus>(`/patient/doctors/${doctorId}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    })
+    // return request<DoctorWithStatus>(`/patient/doctors/${doctorId}`, {
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    // })
+    return disabledPatientEndpoint<DoctorWithStatus>(`/patient/doctors/${doctorId}`, token)
   },
 
   requestConsultation: (doctorId: string, notes?: string, token?: string) => {
-    return request<{ id: string; status: string }>(`/patient/consultation-requests`, {
-      method: "POST",
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-      body: JSON.stringify({ doctorId, notes }),
-    })
+    // return request<{ id: string; status: string }>(`/patient/consultation-requests`, {
+    //   method: "POST",
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    //   body: JSON.stringify({ doctorId, notes }),
+    // })
+    return disabledPatientEndpoint<{ id: string; status: string }>("/patient/consultation-requests", doctorId, notes, token)
   },
 
   cancelConsultation: (requestId: string, token?: string) => {
-    return request<{ message: string }>(`/patient/consultation-requests/${requestId}/cancel`, {
-      method: "POST",
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    })
+    // return request<{ message: string }>(`/patient/consultation-requests/${requestId}/cancel`, {
+    //   method: "POST",
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    // })
+    return disabledPatientEndpoint<{ message: string }>(`/patient/consultation-requests/${requestId}/cancel`, token)
   },
 
   getDoctorRequests: (token?: string) => {
@@ -555,29 +579,33 @@ export const carePlanApi = {
   },
 
   getPatientActivePlan: (token: string) => {
-    return request<CarePlan | null>("/patient/care-plan/active", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    // return request<CarePlan | null>("/patient/care-plan/active", {
+    //   headers: { Authorization: `Bearer ${token}` },
+    // })
+    return disabledPatientEndpoint<CarePlan | null>("/patient/care-plan/active", token)
   },
 
   getPatientCarePlans: (token: string) => {
-    return request<CarePlan[]>("/patient/care-plans", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    // return request<CarePlan[]>("/patient/care-plans", {
+    //   headers: { Authorization: `Bearer ${token}` },
+    // })
+    return disabledPatientEndpoint<CarePlan[]>("/patient/care-plans", token)
   },
 
   getSyncNotification: (token: string) => {
-    return request<SyncNotificationResponse>("/patient/care-plan/sync-notification", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    // return request<SyncNotificationResponse>("/patient/care-plan/sync-notification", {
+    //   headers: { Authorization: `Bearer ${token}` },
+    // })
+    return disabledPatientEndpoint<SyncNotificationResponse>("/patient/care-plan/sync-notification", token)
   },
 
   acknowledgePlan: (planId: string, token: string) => {
-    return request<{ message: string }>("/patient/care-plan/acknowledge", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ planId }),
-    })
+    // return request<{ message: string }>("/patient/care-plan/acknowledge", {
+    //   method: "POST",
+    //   headers: { Authorization: `Bearer ${token}` },
+    //   body: JSON.stringify({ planId }),
+    // })
+    return disabledPatientEndpoint<{ message: string }>("/patient/care-plan/acknowledge", planId, token)
   },
 }
 
@@ -605,10 +633,11 @@ export type AdherenceMetricsResponse = {
 
 export const reminderApi = {
   getTodaySchedule: (date?: string, token?: string) => {
-    const query = date ? `?date=${encodeURIComponent(date)}` : ""
-    return request<TodayScheduleResponse>(`/patient/today${query}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    })
+    // const query = date ? `?date=${encodeURIComponent(date)}` : ""
+    // return request<TodayScheduleResponse>(`/patient/today${query}`, {
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    // })
+    return disabledPatientEndpoint<TodayScheduleResponse>("/patient/today", date, token)
   },
 
   toggleReminder: (
@@ -621,20 +650,22 @@ export const reminderApi = {
     },
     token?: string
   ) => {
-    return request<{ completed: boolean; key: string; completedAt?: string }>(
-      "/patient/reminders/toggle",
-      {
-        method: "POST",
-        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-        body: JSON.stringify(input),
-      }
-    )
+    // return request<{ completed: boolean; key: string; completedAt?: string }>(
+    //   "/patient/reminders/toggle",
+    //   {
+    //     method: "POST",
+    //     headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    //     body: JSON.stringify(input),
+    //   }
+    // )
+    return disabledPatientEndpoint<{ completed: boolean; key: string; completedAt?: string }>("/patient/reminders/toggle", input, token)
   },
 
   getPatientAdherence: (token?: string) => {
-    return request<AdherenceMetricsResponse>("/patient/adherence", {
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    })
+    // return request<AdherenceMetricsResponse>("/patient/adherence", {
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    // })
+    return disabledPatientEndpoint<AdherenceMetricsResponse>("/patient/adherence", token)
   },
 
   getHospitalPatientAdherence: (patientId: string, token?: string) => {
@@ -649,17 +680,19 @@ export const feedbackApi = {
     input: { category: FeedbackCategory; message: string },
     token?: string
   ) => {
-    return request<FeedbackEntry>("/patient/feedback", {
-      method: "POST",
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-      body: JSON.stringify(input),
-    })
+    // return request<FeedbackEntry>("/patient/feedback", {
+    //   method: "POST",
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    //   body: JSON.stringify(input),
+    // })
+    return disabledPatientEndpoint<FeedbackEntry>("/patient/feedback", input, token)
   },
 
   getPatientFeedbacks: (token?: string) => {
-    return request<FeedbackEntry[]>("/patient/feedback", {
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    })
+    // return request<FeedbackEntry[]>("/patient/feedback", {
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    // })
+    return disabledPatientEndpoint<FeedbackEntry[]>("/patient/feedback", token)
   },
 
   getHospitalPatientFeedbacks: (patientId: string, token?: string) => {
@@ -681,49 +714,55 @@ export const feedbackApi = {
 
 export const companionApi = {
   getHistory: (token?: string) => {
-    return request<ChatMessage[]>("/companion/history", {
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    })
+    // return request<ChatMessage[]>("/companion/history", {
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    // })
+    return disabledPatientEndpoint<ChatMessage[]>("/companion/history", token)
   },
 
   chat: (message: string, token?: string) => {
-    return request<ChatMessage>("/companion/chat", {
-      method: "POST",
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-      body: JSON.stringify({ message }),
-    })
+    // return request<ChatMessage>("/companion/chat", {
+    //   method: "POST",
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    //   body: JSON.stringify({ message }),
+    // })
+    return disabledPatientEndpoint<ChatMessage>("/companion/chat", message, token)
   },
 
   reportMessage: (messageId: string, token?: string) => {
-    return request<{ message: string }>(`/companion/messages/${messageId}/report`, {
-      method: "POST",
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    })
+    // return request<{ message: string }>(`/companion/messages/${messageId}/report`, {
+    //   method: "POST",
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    // })
+    return disabledPatientEndpoint<{ message: string }>(`/companion/messages/${messageId}/report`, token)
   },
 }
 
 export const wearableApi = {
   getStatus: (token?: string) => {
-    return request<{ isConnected: boolean; connection: WearableConnection | null }>("/patient/wearable/status", {
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    })
+    // return request<{ isConnected: boolean; connection: WearableConnection | null }>("/patient/wearable/status", {
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    // })
+    return disabledPatientEndpoint<{ isConnected: boolean; connection: WearableConnection | null }>("/patient/wearable/status", token)
   },
 
   connect: (deviceId = "sera-1", token?: string) => {
-    const cleanId = deviceId.trim().toLowerCase()
-    const normalizedId = cleanId.includes("sera-") ? cleanId : `sera-${cleanId.replace(/[^0-9]/g, "") || "1"}`
-    return request<WearableConnection>("/patient/wearable/connect", {
-      method: "POST",
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-      body: JSON.stringify({ deviceName: `HUAWEI Band 9 (${normalizedId})`, deviceModel: normalizedId }),
-    })
+    // const cleanId = deviceId.trim().toLowerCase()
+    // const normalizedId = cleanId.includes("sera-") ? cleanId : `sera-${cleanId.replace(/[^0-9]/g, "") || "1"}`
+    // return request<WearableConnection>("/patient/wearable/connect", {
+    //   method: "POST",
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    //   body: JSON.stringify({ deviceName: `HUAWEI Band 9 (${normalizedId})`, deviceModel: normalizedId }),
+    // })
+    return disabledPatientEndpoint<WearableConnection>("/patient/wearable/connect", deviceId, token)
   },
 
   disconnect: (token?: string) => {
-    return request<{ message: string }>("/patient/wearable/disconnect", {
-      method: "POST",
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    })
+    // return request<{ message: string }>("/patient/wearable/disconnect", {
+    //   method: "POST",
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    // })
+    return disabledPatientEndpoint<{ message: string }>("/patient/wearable/disconnect", token)
   },
 
   sync: (
@@ -743,18 +782,20 @@ export const wearableApi = {
     },
     token?: string
   ) => {
-    return request<DailyReadings>("/patient/wearable/sync", {
-      method: "POST",
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-      body: JSON.stringify(data),
-    })
+    // return request<DailyReadings>("/patient/wearable/sync", {
+    //   method: "POST",
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    //   body: JSON.stringify(data),
+    // })
+    return disabledPatientEndpoint<DailyReadings>("/patient/wearable/sync", data, token)
   },
 
   getDaily: (date?: string, token?: string) => {
-    const query = date ? `?date=${encodeURIComponent(date)}` : ""
-    return request<DailyReadings>(`/patient/wearable/daily${query}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    })
+    // const query = date ? `?date=${encodeURIComponent(date)}` : ""
+    // return request<DailyReadings>(`/patient/wearable/daily${query}`, {
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    // })
+    return disabledPatientEndpoint<DailyReadings>("/patient/wearable/daily", date, token)
   },
 
   getTrends: (
@@ -763,14 +804,15 @@ export const wearableApi = {
     anchor?: string,
     token?: string
   ) => {
-    const params = new URLSearchParams()
-    if (period) params.set("period", period)
-    if (metric) params.set("metric", metric)
-    if (anchor) params.set("anchor", anchor)
-    const qs = params.toString() ? `?${params.toString()}` : ""
-    return request<MetricTrend | Record<WearableMetric, MetricTrend>>(`/patient/wearable/trends${qs}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    })
+    // const params = new URLSearchParams()
+    // if (period) params.set("period", period)
+    // if (metric) params.set("metric", metric)
+    // if (anchor) params.set("anchor", anchor)
+    // const qs = params.toString() ? `?${params.toString()}` : ""
+    // return request<MetricTrend | Record<WearableMetric, MetricTrend>>(`/patient/wearable/trends${qs}`, {
+    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    // })
+    return disabledPatientEndpoint<MetricTrend | Record<WearableMetric, MetricTrend>>("/patient/wearable/trends", period, metric, anchor, token)
   },
 
   getHospitalMonitoring: (patientId: string, anchor?: string, token?: string) => {
