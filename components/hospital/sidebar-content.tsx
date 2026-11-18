@@ -20,9 +20,9 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { href: routes.hospital.dashboard, label: "Dashboard", icon: LayoutDashboard },
-  { href: routes.hospital.requests, label: "Permintaan", icon: ClipboardCheck },
-  { href: routes.hospital.patientList, label: "Pasien", icon: Users },
-  { href: routes.hospital.consultations, label: "Jadwal Konsultasi", icon: CalendarClock },
+  { href: routes.hospital.requests, label: "Requests", icon: ClipboardCheck },
+  { href: routes.hospital.patientList, label: "Patients", icon: Users },
+  { href: routes.hospital.consultations, label: "Consultations", icon: CalendarClock },
 ]
 
 type SidebarContentProps = {
@@ -46,7 +46,7 @@ export function SidebarContent({ onNavigate }: SidebarContentProps) {
         <BrandLogo caption="Clinician workspace" className="text-sidebar-foreground" />
       </div>
 
-      <nav aria-label="Navigasi dokter" className="flex flex-1 flex-col gap-1 p-3">
+      <nav aria-label="Doctor navigation" className="flex flex-1 flex-col gap-1 p-3">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(`${href}/`)
           return (
@@ -80,7 +80,7 @@ export function SidebarContent({ onNavigate }: SidebarContentProps) {
             <p className="truncate text-sm font-medium" title={doctor?.name}>{doctor?.name}</p>
             <p className="truncate text-xs text-sidebar-foreground/60">{doctor?.specialty}</p>
           </div>
-          <Button variant="ghost" size="icon" aria-label="Keluar" onClick={handleLogout}>
+          <Button variant="ghost" size="icon" aria-label="Sign out" onClick={handleLogout}>
             <LogOut />
           </Button>
         </div>

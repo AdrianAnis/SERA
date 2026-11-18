@@ -7,7 +7,7 @@ type PatientHistoryTimelineProps = {
 }
 
 export function PatientHistoryTimeline({ entries }: PatientHistoryTimelineProps) {
-  if (entries.length === 0) return <p className="type-caption">Belum ada riwayat.</p>
+  if (entries.length === 0) return <p className="type-caption">No history yet.</p>
 
   return (
     <ol className="space-y-5 border-l pl-5">

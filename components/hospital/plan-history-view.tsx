@@ -37,13 +37,13 @@ export function PlanHistoryView({ patientId }: PlanHistoryViewProps) {
   return (
     <>
       <PageHeader
-        title="Riwayat care plan"
-        description={patient ? `Semua versi untuk ${patient.name}. Versi lama hanya bisa dibaca.` : "Pasien tidak ditemukan."}
+        title="Care plan history"
+        description={patient ? `All versions for ${patient.name}. Older versions are read-only.` : "Patient not found."}
         actions={
           <Button asChild variant="outline">
             <Link href={routes.hospital.patientDetail(patientId)}>
               <ChevronLeft />
-              Kembali ke pasien
+              Back to patient
             </Link>
           </Button>
         }
@@ -51,16 +51,16 @@ export function PlanHistoryView({ patientId }: PlanHistoryViewProps) {
       <div className="p-4 md:p-6">
         <div className="rounded-2xl border bg-card">
           <div className="hidden grid-cols-12 gap-4 border-b px-5 py-3 text-xs font-medium text-muted-foreground md:grid">
-            <span className="col-span-2">Versi</span>
+            <span className="col-span-2">Version</span>
             <span className="col-span-2">Status</span>
-            <span className="col-span-3">Dibuat oleh</span>
-            <span className="col-span-3">Dikonfirmasi</span>
-            <span className="col-span-2 text-right">Isi</span>
+            <span className="col-span-3">Created by</span>
+            <span className="col-span-3">Confirmed</span>
+            <span className="col-span-2 text-right">Contents</span>
           </div>
           <ul className="divide-y">
             {planHistory.map((plan) => (
               <li key={plan.id} className="grid items-center gap-2 px-5 py-4 md:grid-cols-12 md:gap-4">
-                <span className="text-sm font-semibold md:col-span-2">Versi {plan.version}</span>
+                <span className="text-sm font-semibold md:col-span-2">Version {plan.version}</span>
                 <div className="md:col-span-2">
                   <StatusDot tone={STATUS_TONE[plan.status]} label={CARE_PLAN_STATUS_LABEL[plan.status]} />
                 </div>
@@ -68,7 +68,7 @@ export function PlanHistoryView({ patientId }: PlanHistoryViewProps) {
                 <span className="type-caption md:col-span-3">{plan.confirmedAt ? formatDateTime(plan.confirmedAt) : "-"}</span>
                 <div className="md:col-span-2 md:text-right">
                   <Button variant="outline" size="sm" onClick={() => setViewedPlan(plan)}>
-                    Lihat
+                    View
                   </Button>
                 </div>
               </li>
@@ -80,7 +80,7 @@ export function PlanHistoryView({ patientId }: PlanHistoryViewProps) {
       <Dialog open={viewedPlan !== null} onOpenChange={(isOpen) => (isOpen ? undefined : setViewedPlan(null))}>
         <DialogContent className="max-h-dvh gap-5 overflow-y-auto sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold">Care plan versi {viewedPlan?.version}</DialogTitle>
+            <DialogTitle className="text-xl font-semibold">Care plan version {viewedPlan?.version}</DialogTitle>
             <DialogDescription>{viewedPlan?.sourceText}</DialogDescription>
           </DialogHeader>
           {viewedPlan ? <PlanItemsList plan={viewedPlan} /> : null}

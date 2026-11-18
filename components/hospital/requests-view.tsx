@@ -65,7 +65,7 @@ export function RequestsView() {
   }, [doctorSession?.token])
 
   async function handleReject(requestId: string) {
-    if (!confirm("Apakah Anda yakin ingin menolak permintaan konsultasi ini?")) return
+    if (!confirm("Are you sure you want to reject this consultation request?")) return
     setRejectingId(requestId)
     setFeedback(null)
 
@@ -76,13 +76,13 @@ export function RequestsView() {
       )
       setFeedback({
         type: "success",
-        message: "Permintaan konsultasi telah ditolak.",
+        message: "The consultation request has been rejected.",
       })
     } catch (err) {
       console.error("Gagal menolak permintaan:", err)
       setFeedback({
         type: "error",
-        message: (err as Error).message || "Gagal menolak permintaan.",
+        message: (err as Error).message || "Failed to reject the request.",
       })
     } finally {
       setRejectingId(null)
@@ -105,8 +105,8 @@ export function RequestsView() {
   return (
     <>
       <PageHeader
-        title="Permintaan"
-        description={`${pendingCount} permintaan konsultasi menunggu konfirmasi dari Anda.`}
+        title="Requests"
+        description={`${pendingCount} consultation request(s) awaiting your confirmation.`}
       />
 
       <div className="space-y-4 p-4 md:p-6">
@@ -133,46 +133,46 @@ export function RequestsView() {
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
             <Label htmlFor="request-search" className="sr-only">
-              Cari permintaan
+              Search requests
             </Label>
             <Search className="absolute top-3 left-3.5 size-4 text-muted-foreground" />
             <Input
               id="request-search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari nama pasien, email, atau keluhan..."
+              placeholder="Search patient name, email, or complaint..."
               className="bg-card pl-10"
             />
           </div>
 
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger aria-label="Filter status permintaan" className="w-full bg-card sm:w-60">
+            <SelectTrigger aria-label="Filter request status" className="w-full bg-card sm:w-60">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Semua status</SelectItem>
-              <SelectItem value="pending">Menunggu konfirmasi</SelectItem>
-              <SelectItem value="approved">Disetujui</SelectItem>
-              <SelectItem value="rejected">Ditolak</SelectItem>
+              <SelectItem value="all">All statuses</SelectItem>
+              <SelectItem value="pending">Awaiting confirmation</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div className="rounded-2xl border bg-card">
           <div className="hidden grid-cols-12 gap-4 border-b px-5 py-3 text-xs font-medium text-muted-foreground md:grid">
-            <span className="col-span-4">Pasien</span>
-            <span className="col-span-3">Catatan / Keluhan</span>
-            <span className="col-span-2">Waktu Permintaan</span>
-            <span className="col-span-3 text-right">Aksi</span>
+            <span className="col-span-4">Patient</span>
+            <span className="col-span-3">Notes / Complaint</span>
+            <span className="col-span-2">Requested at</span>
+            <span className="col-span-3 text-right">Actions</span>
           </div>
 
           {isLoading ? (
             <div className="flex flex-col items-center justify-center p-12">
               <Loader2 className="size-6 animate-spin text-primary" />
-              <p className="mt-2 text-xs text-muted-foreground">Memuat permintaan...</p>
+              <p className="mt-2 text-xs text-muted-foreground">Loading requests...</p>
             </div>
           ) : filteredRequests.length === 0 ? (
-            <p className="p-10 text-center type-caption">Tidak ada permintaan konsultasi yang cocok.</p>
+            <p className="p-10 text-center type-caption">No matching consultation requests.</p>
           ) : (
             <ul className="divide-y">
               {filteredRequests.map((req) => {
@@ -204,7 +204,7 @@ export function RequestsView() {
                     {/* Notes / Complaint */}
                     <div className="text-sm md:col-span-3">
                       <p className="line-clamp-2 text-xs text-muted-foreground">
-                        {req.notes || "Permintaan konsultasi online."}
+                        {req.notes || "Online consultation request."}
                       </p>
                     </div>
 
@@ -226,8 +226,8 @@ export function RequestsView() {
                             disabled={rejectingId === req.id}
                             onClick={() => handleReject(req.id)}
                             className="size-9 p-0 rounded-full border-destructive/30 text-destructive hover:bg-destructive hover:text-destructive-foreground transition-colors shadow-sm"
-                            title="Tolak Permintaan (Silang)"
-                            aria-label="Tolak Permintaan"
+                            title="Reject request"
+                            aria-label="Reject request"
                           >
                             {rejectingId === req.id ? (
                               <Loader2 className="size-4 animate-spin" />
@@ -240,12 +240,12 @@ export function RequestsView() {
                             size="sm"
                             asChild
                             className="h-9 px-3.5 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 transition-colors shadow-sm gap-1.5 text-xs font-semibold"
-                            title="Terima & Buat Rekam Medis (Ceklis)"
-                            aria-label="Terima & Buat Rekam Medis"
+                            title="Accept & create medical record"
+                            aria-label="Accept & create medical record"
                           >
                             <Link href={routes.hospital.requestRecord(req.id)}>
                               <Check className="size-4" />
-                              <span>Terima</span>
+                              <span>Accept</span>
                             </Link>
                           </Button>
                         </>
@@ -255,7 +255,7 @@ export function RequestsView() {
                           className="border-emerald-500/30 bg-emerald-500/10 text-emerald-700 gap-1.5 px-3 py-1 text-xs"
                         >
                           <CheckCircle2 className="size-3.5 text-emerald-600" />
-                          Diterima
+                          Accepted
                         </Badge>
                       ) : req.status === "rejected" ? (
                         <Badge
@@ -263,11 +263,11 @@ export function RequestsView() {
                           className="border-destructive/30 bg-destructive/10 text-destructive gap-1.5 px-3 py-1 text-xs"
                         >
                           <XCircle className="size-3.5" />
-                          Ditolak
+                          Rejected
                         </Badge>
                       ) : (
                         <Badge variant="outline" className="text-muted-foreground text-xs">
-                          Dibatalkan
+                          Cancelled
                         </Badge>
                       )}
                     </div>

@@ -11,9 +11,9 @@ export function WearableEmptyState({ patientName }: WearableEmptyStateProps) {
         <Watch className="size-7" aria-hidden="true" />
       </span>
       <div className="space-y-1">
-        <h3 className="type-heading">Smartwatch belum terhubung</h3>
+        <h3 className="type-heading">Smartwatch not connected</h3>
         <p className="mx-auto max-w-md type-caption">
-          {patientName} belum menghubungkan smartwatch di aplikasi Sera. Data langkah, detak jantung, tidur, dan SpO₂ akan tampil di sini setelah perangkat terhubung.
+          {patientName} has not connected a smartwatch in the Sera app yet. Steps, heart rate, sleep, and SpO₂ data will appear here once a device is connected.
         </p>
       </div>
     </div>

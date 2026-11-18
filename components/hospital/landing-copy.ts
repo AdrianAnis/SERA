@@ -18,59 +18,59 @@ export type LandingQuestion = {
 }
 
 export const HERO_PHOTO_ID = "photo-1758691463000-08b98131daf3"
-export const HERO_PHOTO_ALT = "Dokter menunjukkan hasil pemindaian kepada pasien lewat tablet"
+export const HERO_PHOTO_ALT = "Doctor showing scan results to a patient on a tablet"
 
 export const LANDING_STEPS: LandingStep[] = [
   {
     number: "01",
-    title: "Tulis instruksi seperti biasa",
-    text: "Satu kalimat sudah cukup. Obat, makanan, aktivitas, dan jadwal kontrol tersusun menjadi item terstruktur yang bisa Anda ubah per item.",
-    points: ["Usulan AI hanya saran dan diberi penanda", "Validasi otomatis sebelum sesi bisa diselesaikan"],
+    title: "Write instructions as usual",
+    text: "One sentence is enough. Medications, diet, activities, and follow-ups become structured items you can edit one by one.",
+    points: ["AI suggestions are only suggestions and are clearly marked", "Automatic validation before the session can be finished"],
     photoId: "photo-1758691462668-046fd85ceac9",
-    photoAlt: "Dokter memeriksa hasil pemindaian di tablet pada meja kerja",
+    photoAlt: "Doctor reviewing scan results on a tablet at a desk",
   },
   {
     number: "02",
-    title: "Pasien langsung menerimanya",
-    text: "Begitu Anda mengonfirmasi, jadwal obat, panduan makanan, dan jawaban Companion di aplikasi pasien berganti ke versi terbaru.",
-    points: ["Versi lama otomatis digantikan", "Pasien diberi tahu bahwa care plan diperbarui"],
+    title: "Patients receive it instantly",
+    text: "As soon as you confirm, the medication schedule, diet guide, and Companion answers in the patient app switch to the latest version.",
+    points: ["Older versions are replaced automatically", "Patients are notified that their care plan was updated"],
     photoId: "photo-1666886573517-dee9a64ac615",
-    photoAlt: "Tenaga medis memegang tablet saat bekerja",
+    photoAlt: "Healthcare worker holding a tablet at work",
   },
   {
     number: "03",
-    title: "Pantau tanpa menunggu kontrol",
-    text: "Lihat jadwal yang ditandai pasien, keluhan yang dilaporkan, dan pertanyaan yang tidak bisa dijawab Companion dalam satu dashboard.",
-    points: ["Data perilaku, bukan penilaian kesembuhan", "Pertanyaan di luar care plan diteruskan ke Anda"],
+    title: "Monitor without waiting for follow-ups",
+    text: "See schedules patients checked off, reported complaints, and questions Companion could not answer, all in one dashboard.",
+    points: ["Behavioral data, not a recovery assessment", "Questions outside the care plan are forwarded to you"],
     photoId: "photo-1666886573212-2de95596d509",
-    photoAlt: "Seorang pria menggunakan tablet",
+    photoAlt: "A man using a tablet",
   },
 ]
 
 export const LANDING_FEATURES: LandingFeature[] = [
-  { title: "Builder terstruktur", text: "Obat, makanan, aktivitas, pembatasan, dan kontrol dalam satu form yang divalidasi." },
-  { title: "Usulan AI", text: "Tulis instruksi bebas, biarkan item tersusun, lalu Anda yang menyetujui tiap item." },
-  { title: "Ringkasan perubahan", text: "Sebelum sesi diselesaikan, lihat apa yang ditambah, diubah, dan dihapus dibanding versi aktif." },
-  { title: "Satu versi aktif", text: "Setiap pasien hanya punya satu care plan aktif. Versi lama tersimpan sebagai riwayat." },
-  { title: "Monitoring perilaku", text: "Grafik jadwal yang ditandai pasien dan laporan keluhan, tanpa klaim kesembuhan." },
-  { title: "Eskalasi yang jelas", text: "Pertanyaan darurat atau di luar care plan tidak dijawab asal, dan muncul di dashboard Anda." },
+  { title: "Structured builder", text: "Medications, diet, activities, restrictions, and follow-ups in one validated form." },
+  { title: "AI suggestions", text: "Write free-form instructions, let the items take shape, then approve each item yourself." },
+  { title: "Change summary", text: "Before finishing the session, see what was added, changed, and removed compared to the active version." },
+  { title: "One active version", text: "Each patient has only one active care plan. Older versions are kept as history." },
+  { title: "Behavior monitoring", text: "Charts of schedules patients checked off and complaint reports, with no recovery claims." },
+  { title: "Clear escalation", text: "Urgent or out-of-plan questions are never answered blindly and show up on your dashboard." },
 ]
 
 export const LANDING_QUESTIONS: LandingQuestion[] = [
   {
-    question: "Apakah AI memberi diagnosis atau resep?",
-    answer: "Tidak. AI hanya menyusun instruksi yang Anda tulis menjadi item terstruktur. Tidak ada yang terkirim ke pasien sebelum Anda menyelesaikan sesi.",
+    question: "Does the AI diagnose or prescribe?",
+    answer: "No. The AI only turns the instructions you write into structured items. Nothing is sent to the patient until you finish the session.",
   },
   {
-    question: "Apa yang dilihat pasien?",
-    answer: "Hanya care plan aktif. Jadwal, panduan makanan, dan jawaban Companion selalu berasal dari versi yang sedang berlaku.",
+    question: "What does the patient see?",
+    answer: "Only the active care plan. Schedules, diet guides, and Companion answers always come from the current version.",
   },
   {
-    question: "Bagaimana kepatuhan pasien ditampilkan?",
-    answer: "Sebagai data perilaku, yaitu jadwal yang ditandai selesai. Angka ini tidak dipakai untuk menyimpulkan kesembuhan.",
+    question: "How is patient adherence shown?",
+    answer: "As behavioral data, meaning schedules marked as done. These numbers are not used to infer recovery.",
   },
   {
-    question: "Bagaimana jika pasien bertanya di luar care plan?",
-    answer: "Companion tidak mengarang jawaban. Ia mengarahkan pasien bertanya ke dokter, dan pertanyaannya muncul di dashboard Anda.",
+    question: "What if a patient asks something outside the care plan?",
+    answer: "Companion never makes up answers. It directs the patient to ask their doctor, and the question appears on your dashboard.",
   },
 ]

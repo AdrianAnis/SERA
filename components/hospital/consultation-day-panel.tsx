@@ -15,8 +15,8 @@ type ConsultationDayPanelProps = {
 function describeDay(dateKey: string, now: Date): string {
   const dayOffset = daysBetween(now, dateKey)
   const dateLabel = formatDate(dateKey, "EEEE, d MMMM yyyy")
-  if (dayOffset === 0) return `Hari ini · ${dateLabel}`
-  if (dayOffset === 1) return `Besok · ${dateLabel}`
+  if (dayOffset === 0) return `Today · ${dateLabel}`
+  if (dayOffset === 1) return `Tomorrow · ${dateLabel}`
   return dateLabel
 }
 
@@ -25,10 +25,10 @@ export function ConsultationDayPanel({ dateKey, now, consultations, patientNames
     <section className="rounded-2xl border bg-card">
       <header className="border-b px-5 py-4">
         <h2 className="type-subheading">{describeDay(dateKey, now)}</h2>
-        <p className="type-caption">{consultations.length} konsultasi pada hari ini.</p>
+        <p className="type-caption">{consultations.length} consultation(s) on this day.</p>
       </header>
       {consultations.length === 0 ? (
-        <p className="p-8 text-center type-caption">Tidak ada konsultasi pada tanggal ini.</p>
+        <p className="p-8 text-center type-caption">No consultations on this date.</p>
       ) : (
         <ul className="divide-y">
           {consultations.map((consultation) => (

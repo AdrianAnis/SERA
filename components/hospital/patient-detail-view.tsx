@@ -52,12 +52,12 @@ export function PatientDetailView({ patientId }: PatientDetailViewProps) {
   if (!patient) {
     return (
       <>
-        <PageHeader title="Pasien tidak ditemukan" />
+        <PageHeader title="Patient not found" />
         <div className="flex flex-col items-center gap-3 p-10 text-center text-muted-foreground">
           <UserX className="size-8" />
-          <p>Pasien dengan ID ini tidak ada di daftar Anda.</p>
+          <p>No patient with this ID is on your list.</p>
           <Button asChild variant="outline">
-            <Link href={routes.hospital.patientList}>Kembali ke daftar pasien</Link>
+            <Link href={routes.hospital.patientList}>Back to patient list</Link>
           </Button>
         </div>
       </>
@@ -86,12 +86,12 @@ export function PatientDetailView({ patientId }: PatientDetailViewProps) {
               </Link>
             </Button>
             <Button asChild variant="outline">
-              <Link href={routes.hospital.carePlanHistory(patient.id)}>Riwayat versi</Link>
+              <Link href={routes.hospital.carePlanHistory(patient.id)}>Version history</Link>
             </Button>
             <Button asChild>
               <Link href={routes.hospital.carePlanNew(patient.id)}>
                 <FilePenLine />
-                Revisi care plan
+                Revise care plan
               </Link>
             </Button>
           </>
@@ -103,24 +103,24 @@ export function PatientDetailView({ patientId }: PatientDetailViewProps) {
           <SeraConnectionCard patientId={patient.id} patientName={patient.name} phone={patient.phone} />
 
           <section className="space-y-4 rounded-2xl border bg-card p-5">
-            <h2 className="type-subheading">Identitas</h2>
+            <h2 className="type-subheading">Identity</h2>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
               <ReadOnlyField
                 id="detail-age"
-                label="Usia"
-                value={selectPatientAge(patient, now) !== null ? `${selectPatientAge(patient, now)} tahun` : "-"}
+                label="Age"
+                value={selectPatientAge(patient, now) !== null ? `${selectPatientAge(patient, now)} years` : "-"}
               />
-              <ReadOnlyField id="detail-phone" label="Nomor HP" value={patient.phone} />
-              <ReadOnlyField id="detail-guardian-name" label="Nama wali" value={patient.guardianName} />
-              <ReadOnlyField id="detail-guardian-phone" label="Nomor HP wali" value={patient.guardianPhone} />
-              <ReadOnlyField id="detail-conditions" label="Kondisi" value={patient.conditions.join(", ")} />
-              <ReadOnlyField id="detail-allergies" label="Alergi" value={patient.allergies.length > 0 ? patient.allergies.join(", ") : "Tidak ada"} />
-              <ReadOnlyField id="detail-doctor" label="Dokter" value={doctor?.name ?? "-"} />
+              <ReadOnlyField id="detail-phone" label="Phone number" value={patient.phone} />
+              <ReadOnlyField id="detail-guardian-name" label="Guardian name" value={patient.guardianName} />
+              <ReadOnlyField id="detail-guardian-phone" label="Guardian phone number" value={patient.guardianPhone} />
+              <ReadOnlyField id="detail-conditions" label="Conditions" value={patient.conditions.join(", ")} />
+              <ReadOnlyField id="detail-allergies" label="Allergies" value={patient.allergies.length > 0 ? patient.allergies.join(", ") : "None"} />
+              <ReadOnlyField id="detail-doctor" label="Doctor" value={doctor?.name ?? "-"} />
             </div>
           </section>
 
           <section className="space-y-4 rounded-2xl border bg-card p-5">
-            <h2 className="type-subheading">Riwayat kesehatan</h2>
+            <h2 className="type-subheading">Health history</h2>
             <PatientHistoryTimeline entries={healthHistory} />
           </section>
         </div>
@@ -128,9 +128,9 @@ export function PatientDetailView({ patientId }: PatientDetailViewProps) {
         <div className="space-y-6 xl:col-span-2">
           <section className="space-y-5 rounded-2xl border bg-card p-5">
             <header>
-              <h2 className="type-subheading">Care plan aktif{activePlan ? ` · Versi ${activePlan.version}` : ""}</h2>
+              <h2 className="type-subheading">Active care plan{activePlan ? ` · Version ${activePlan.version}` : ""}</h2>
               <p className="type-caption">
-                {activePlan?.confirmedAt ? `Dikonfirmasi ${formatDate(activePlan.confirmedAt)}` : "Belum ada care plan aktif."}
+                {activePlan?.confirmedAt ? `Confirmed ${formatDate(activePlan.confirmedAt)}` : "No active care plan yet."}
               </p>
             </header>
             {activePlan ? <PlanItemsList plan={activePlan} /> : null}
@@ -139,8 +139,8 @@ export function PatientDetailView({ patientId }: PatientDetailViewProps) {
           <section className="space-y-3 rounded-2xl border bg-card p-5">
             <header className="flex items-baseline justify-between gap-3">
               <div>
-                <h2 className="type-subheading">Tingkat Kepatuhan</h2>
-                <p className="type-caption">7 hari terakhir. Data perilaku, bukan indikator kesembuhan.</p>
+                <h2 className="type-subheading">Adherence</h2>
+                <p className="type-caption">Last 7 days. Behavioral data, not a recovery indicator.</p>
               </div>
               <span className="text-2xl font-semibold tabular-nums">{adherenceRatio === null ? "-" : `${adherencePercentage}%`}</span>
             </header>

@@ -1,5 +1,5 @@
 import { addDays, differenceInCalendarDays, format, getDay, parseISO, startOfDay } from "date-fns"
-import { id } from "date-fns/locale"
+import { enUS } from "date-fns/locale"
 
 export type DateInput = Date | string
 
@@ -39,17 +39,17 @@ export function daysBetween(from: DateInput, to: DateInput): number {
 }
 
 export function formatDate(value: DateInput, pattern = "d MMM yyyy"): string {
-  return format(toDate(value), pattern, { locale: id })
+  return format(toDate(value), pattern, { locale: enUS })
 }
 
 export function formatDateTime(value: DateInput): string {
-  return format(toDate(value), "d MMM yyyy, HH:mm", { locale: id })
+  return format(toDate(value), "d MMM yyyy, HH:mm", { locale: enUS })
 }
 
 export function getGreeting(value: DateInput): string {
   const hour = toDate(value).getHours()
-  if (hour < 11) return "Selamat pagi"
-  if (hour < 15) return "Selamat siang"
-  if (hour < 18) return "Selamat sore"
-  return "Selamat malam"
+  if (hour < 11) return "Good morning"
+  if (hour < 15) return "Good afternoon"
+  if (hour < 18) return "Good afternoon"
+  return "Good evening"
 }

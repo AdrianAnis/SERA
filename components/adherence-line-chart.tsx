@@ -26,8 +26,8 @@ function AdherenceTooltip({ active, payload }: AdherenceTooltipProps) {
   return (
     <div className="rounded-lg border bg-popover px-3 py-2 text-sm text-popover-foreground shadow-md">
       <p className="font-semibold">{formatDate(point.date, "EEEE, d MMM")}</p>
-      <p>Obat: {formatPercent(point.medication)}</p>
-      <p>Aktivitas: {formatPercent(point.activity)}</p>
+      <p>Medication: {formatPercent(point.medication)}</p>
+      <p>Activity: {formatPercent(point.activity)}</p>
     </div>
   )
 }
@@ -37,7 +37,7 @@ export function AdherenceLineChart({ points }: AdherenceLineChartProps) {
 
   return (
     <div className="space-y-3">
-      <div className="h-64 w-full" role="img" aria-label="Grafik garis tingkat kepatuhan obat dan aktivitas selama 7 hari terakhir, skala 0 sampai 100 persen">
+      <div className="h-64 w-full" role="img" aria-label="Line chart of medication and activity adherence over the last 7 days, scale 0 to 100 percent">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: -12 }}>
             <CartesianGrid vertical={false} stroke="var(--border)" />
@@ -52,11 +52,11 @@ export function AdherenceLineChart({ points }: AdherenceLineChartProps) {
               stroke="var(--muted-foreground)"
             />
             <Tooltip content={<AdherenceTooltip />} cursor={{ stroke: "var(--border)" }} />
-            <Line type="monotone" dataKey="medication" name="Obat" stroke="var(--chart-1)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} connectNulls />
+            <Line type="monotone" dataKey="medication" name="Medication" stroke="var(--chart-1)" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} connectNulls />
             <Line
               type="monotone"
               dataKey="activity"
-              name="Aktivitas"
+              name="Activity"
               stroke="var(--chart-2)"
               strokeWidth={2.5}
               strokeDasharray="6 4"
@@ -70,11 +70,11 @@ export function AdherenceLineChart({ points }: AdherenceLineChartProps) {
       <ul className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-muted-foreground">
         <li className="flex items-center gap-2">
           <span className="h-0.5 w-5 rounded-full bg-chart-1" aria-hidden="true" />
-          Obat
+          Medication
         </li>
         <li className="flex items-center gap-2">
           <span className="w-5 border-t-2 border-dashed border-chart-2" aria-hidden="true" />
-          Aktivitas
+          Activity
         </li>
       </ul>
     </div>

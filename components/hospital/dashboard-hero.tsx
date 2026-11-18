@@ -21,7 +21,7 @@ export function DashboardHero({ doctorName, now, pendingCount, action }: Dashboa
         {getGreeting(now)}, {doctorName}
       </h1>
       <p className="relative mt-1 max-w-xl text-primary-foreground/80">
-        {pendingCount === 0 ? "Tidak ada yang perlu Anda tinjau saat ini." : `Ada ${pendingCount} hal yang menunggu tinjauan Anda hari ini.`}
+        {pendingCount === 0 ? "Nothing needs your review right now." : `${pendingCount} item(s) are waiting for your review today.`}
       </p>
       <Button asChild size="lg" className="relative mt-5 h-11 bg-primary-foreground px-5 text-primary hover:bg-primary-foreground/90">
         <Link href={action.href}>

@@ -11,10 +11,10 @@ type ConversationSummaryCardProps = {
 }
 
 function describeCounts(summary: ConversationSummary): string {
-  if (summary.totalMessages === 0) return "Belum ada percakapan."
+  if (summary.totalMessages === 0) return "No conversations yet."
   return summary.escalatedCount > 0
-    ? `${summary.totalMessages} pesan · ${summary.escalatedCount} diteruskan ke dokter`
-    : `${summary.totalMessages} pesan · semuanya terjawab Companion`
+    ? `${summary.totalMessages} messages · ${summary.escalatedCount} forwarded to doctor`
+    : `${summary.totalMessages} messages · all answered by Companion`
 }
 
 export function ConversationSummaryCard({ patientName, summary }: ConversationSummaryCardProps) {
@@ -25,16 +25,16 @@ export function ConversationSummaryCard({ patientName, summary }: ConversationSu
           <MessageCircleMore className="size-5" aria-hidden="true" />
         </span>
         <div>
-          <h2 className="type-subheading">Percakapan dengan Companion</h2>
+          <h2 className="type-subheading">Conversations with Companion</h2>
           <p className="type-caption">{describeCounts(summary)}</p>
         </div>
       </header>
 
       {summary.totalMessages === 0 ? (
-        <p className="p-8 text-center type-caption">{patientName} belum berbincang dengan Companion.</p>
+        <p className="p-8 text-center type-caption">{patientName} has not chatted with Companion yet.</p>
       ) : (
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <ul className="flex flex-wrap gap-1.5 px-5 pt-4" aria-label="Topik percakapan">
+          <ul className="flex flex-wrap gap-1.5 px-5 pt-4" aria-label="Conversation topics">
             {summary.categoryCounts.map(({ category, count }) => (
               <li key={category} className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium">
                 {CONVERSATION_CATEGORY_LABEL[category]} {count}

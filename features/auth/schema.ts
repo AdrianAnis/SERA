@@ -1,10 +1,10 @@
 import { z } from "zod"
 
-const emailSchema = z.email("Email tidak valid")
+const emailSchema = z.email("Invalid email")
 
 export const doctorLoginSchema = z.object({
   email: emailSchema,
-  password: z.string().min(1, "Kata sandi wajib diisi"),
+  password: z.string().min(1, "Password is required"),
 })
 
 export const patientSignInSchema = z.object({

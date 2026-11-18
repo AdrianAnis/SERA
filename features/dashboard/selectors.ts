@@ -19,8 +19,8 @@ type AttentionSources = {
 }
 
 export const ATTENTION_KIND_LABEL: Record<AttentionKind, string> = {
-  feedback: "Laporan pasien",
-  escalation: "Pertanyaan dieskalasi",
+  feedback: "Patient report",
+  escalation: "Escalated question",
 }
 
 export function selectAttentionItems({ feedbackEntries, threads }: AttentionSources): AttentionItem[] {

@@ -96,10 +96,10 @@ export function CarePlanBuilder({ patient, doctor, activePlan, nextVersion }: Ca
         { patientId: patient.id, createdBy: doctor.id, sourceText: values.sourceText.trim(), items: values.items },
         doctorSession?.token
       )
-      toast.success(`Sesi selesai. Care plan ${versionLabel} dikirim ke ${patient.name}`)
+      toast.success(`Session finished. Care plan ${versionLabel} sent to ${patient.name}`)
       router.push(routes.hospital.patientDetail(patient.id))
     } catch (err) {
-      toast.error((err as Error).message || "Gagal menerbitkan care plan")
+      toast.error((err as Error).message || "Failed to publish care plan")
     }
   }
 
@@ -124,11 +124,11 @@ export function CarePlanBuilder({ patient, doctor, activePlan, nextVersion }: Ca
                 </h2>
                 <Button type="button" variant="outline" size="sm" onClick={() => append(createBlankItem(kind))}>
                   <Plus />
-                  Tambah
+                  Add
                 </Button>
               </div>
               {kindFields.length === 0 ? (
-                <p className="rounded-2xl border border-dashed p-5 text-sm text-muted-foreground">Belum ada item {CARE_PLAN_ITEM_KIND_LABEL[kind].toLowerCase()}.</p>
+                <p className="rounded-2xl border border-dashed p-5 text-sm text-muted-foreground">No {CARE_PLAN_ITEM_KIND_LABEL[kind].toLowerCase()} items yet.</p>
               ) : (
                 kindFields.map(({ field, index }) => (
                   <BuilderItemCard

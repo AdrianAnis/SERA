@@ -58,28 +58,28 @@ export function PatientListView() {
 
   return (
     <>
-      <PageHeader title="Pasien" description={`${patients.length} pasien yang Anda tangani.`} />
+      <PageHeader title="Patients" description={`${patients.length} patient(s) under your care.`} />
       <div className="space-y-4 p-4 md:p-6">
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
             <Label htmlFor="patient-search" className="sr-only">
-              Cari pasien
+              Search patients
             </Label>
             <Search className="absolute top-3 left-3.5 size-4 text-muted-foreground" />
             <Input
               id="patient-search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Cari nama atau nomor rekam medis"
+              placeholder="Search by name or medical record number"
               className="bg-card pl-10"
             />
           </div>
           <Select value={statusFilter} onValueChange={(value) => setStatusFilter(isStatusFilter(value) ? value : "all")}>
-            <SelectTrigger aria-label="Filter status care plan" className="w-full bg-card sm:w-64">
+            <SelectTrigger aria-label="Filter care plan status" className="w-full bg-card sm:w-64">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Semua status</SelectItem>
+              <SelectItem value="all">All statuses</SelectItem>
               {FILTER_OPTIONS.map(([status, label]) => (
                 <SelectItem key={status} value={status}>
                   {label}
@@ -91,13 +91,13 @@ export function PatientListView() {
 
         <div className="rounded-2xl border bg-card">
           <div className="hidden grid-cols-12 gap-4 border-b px-5 py-3 text-xs font-medium text-muted-foreground md:grid">
-            <span className="col-span-4">Pasien</span>
+            <span className="col-span-4">Patient</span>
             <span className="col-span-3">Diagnosis</span>
             <span className="col-span-2">Care plan</span>
-            <span className="col-span-3">Tingkat Kepatuhan (7 hari)</span>
+            <span className="col-span-3">Adherence (7 days)</span>
           </div>
           {visiblePatients.length === 0 ? (
-            <p className="p-10 text-center type-caption">Tidak ada pasien yang cocok.</p>
+            <p className="p-10 text-center type-caption">No matching patients.</p>
           ) : (
             <ul className="divide-y">
               {visiblePatients.map((patient) => {

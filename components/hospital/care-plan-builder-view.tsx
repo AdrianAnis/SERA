@@ -22,11 +22,11 @@ export function CarePlanBuilderView({ patientId }: CarePlanBuilderViewProps) {
   if (!isHydrated) return <HospitalPageSkeleton />
 
   if (!patient || !doctor) {
-    return <PageHeader title="Pasien tidak ditemukan" description="Builder tidak bisa dibuka tanpa data pasien." />
+    return <PageHeader title="Patient not found" description="The builder cannot be opened without patient data." />
   }
 
   const nextVersion = (planHistory[0]?.version ?? 0) + 1
-  const title = activePlan ? "Revisi care plan" : "Care plan baru"
+  const title = activePlan ? "Revise care plan" : "New care plan"
 
   return (
     <>
@@ -37,7 +37,7 @@ export function CarePlanBuilderView({ patientId }: CarePlanBuilderViewProps) {
           <Button asChild variant="outline" size="sm">
             <Link href={routes.hospital.patientDetail(patient.id)}>
               <ChevronLeft />
-              Kembali ke pasien
+              Back to patient
             </Link>
           </Button>
         }

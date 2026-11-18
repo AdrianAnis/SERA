@@ -30,17 +30,17 @@ export function BuilderItemCard({ form, index, kind, isAiSuggested, onRemove }: 
           <div className="flex items-center gap-2">
             <Badge className="gap-1">
               <Sparkles className="size-3" />
-              Disarankan AI
+              AI suggested
             </Badge>
             <Button type="button" variant="ghost" size="xs" onClick={markApproved}>
               <Check />
-              Setujui
+              Approve
             </Button>
           </div>
         ) : (
           <span />
         )}
-        <Button type="button" variant="ghost" size="icon-sm" aria-label="Hapus item" onClick={onRemove}>
+        <Button type="button" variant="ghost" size="icon-sm" aria-label="Remove item" onClick={onRemove}>
           <Trash2 />
         </Button>
       </div>

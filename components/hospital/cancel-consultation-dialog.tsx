@@ -25,27 +25,27 @@ export function CancelConsultationDialog({ consultation, patientName, onOpenChan
     <Dialog open={consultation !== null} onOpenChange={onOpenChange}>
       <DialogContent className="gap-4 sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Batalkan jadwal konsultasi?</DialogTitle>
+          <DialogTitle>Cancel this consultation?</DialogTitle>
           <DialogDescription>
-            {consultation ? `Konsultasi ${patientName} pada ${formatDateTime(consultation.startsAt)} akan dibatalkan.` : null}
+            {consultation ? `The consultation with ${patientName} on ${formatDateTime(consultation.startsAt)} will be cancelled.` : null}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-2">
-          <Label htmlFor="cancel-reason">Alasan pembatalan (opsional)</Label>
+          <Label htmlFor="cancel-reason">Cancellation reason (optional)</Label>
           <Textarea
             id="cancel-reason"
             value={reason}
             maxLength={REASON_MAX_LENGTH}
             onChange={(event) => setReason(event.target.value)}
-            placeholder="Contoh: dokter berhalangan hadir"
+            placeholder="Example: doctor is unavailable"
           />
         </div>
         <DialogFooter>
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-            Tidak jadi
+            Keep it
           </Button>
           <Button type="button" variant="destructive" onClick={() => onConfirm(reason)}>
-            Batalkan jadwal
+            Cancel consultation
           </Button>
         </DialogFooter>
       </DialogContent>

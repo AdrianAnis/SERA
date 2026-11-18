@@ -60,7 +60,7 @@ export function ConsultationView({ initialDateKey }: ConsultationViewProps) {
   }
 
   function handleTimeChange(availabilityId: string, field: AvailabilityTimeField, value: string): void {
-    if (!setAvailabilityTime(availabilityId, field, value)) toast.error("Jam selesai harus setelah jam mulai")
+    if (!setAvailabilityTime(availabilityId, field, value)) toast.error("End time must be after start time")
   }
 
   function handleCancelDialogChange(isOpen: boolean): void {
@@ -69,19 +69,19 @@ export function ConsultationView({ initialDateKey }: ConsultationViewProps) {
 
   function handleReconfirm(consultation: Consultation): void {
     reconfirmConsultation(consultation.id)
-    toast.success("Jadwal konsultasi dikonfirmasi ulang")
+    toast.success("Consultation reconfirmed")
   }
 
   function handleConfirmCancel(reason: string): void {
     if (!cancelTarget) return
     cancelConsultation(cancelTarget.id, reason)
     setCancelTarget(null)
-    toast.success("Jadwal konsultasi dibatalkan")
+    toast.success("Consultation cancelled")
   }
 
   return (
     <>
-      <PageHeader title="Jadwal Konsultasi" description={`${upcomingCount} konsultasi mendatang.`} />
+      <PageHeader title="Consultations" description={`${upcomingCount} upcoming consultation(s).`} />
       <div className="grid gap-4 p-4 md:p-6 lg:grid-cols-5 lg:items-start">
         <div className="lg:col-span-3">
           <ConsultationCalendar

@@ -18,7 +18,7 @@ export function BuilderSummaryPanel({ versionLabel, counts, isValid, hasPendingA
     <Card className="xl:sticky xl:top-4">
       <CardHeader>
         <CardTitle>Care plan {versionLabel}</CardTitle>
-        <CardDescription>Ringkasan sebelum dikirim ke pasien.</CardDescription>
+        <CardDescription>Summary before sending to the patient.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <dl className="space-y-1.5 text-sm">
@@ -38,13 +38,13 @@ export function BuilderSummaryPanel({ versionLabel, counts, isValid, hasPendingA
           )}
           {isValid
             ? hasPendingAiItems
-              ? "Valid. Masih ada item saran AI yang belum Anda tinjau."
-              : "Semua isian valid dan siap dikirim ke pasien."
-            : "Lengkapi isian yang belum valid sebelum menyelesaikan sesi."}
+              ? "Valid. Some AI-suggested items have not been reviewed yet."
+              : "All fields are valid and ready to send to the patient."
+            : "Fix the invalid fields before finishing the session."}
         </p>
 
         <Button type="button" className="w-full" disabled={!isValid} onClick={onFinishSession}>
-          Selesaikan sesi
+          Finish session
         </Button>
       </CardContent>
     </Card>

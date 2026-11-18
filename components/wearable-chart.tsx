@@ -43,7 +43,7 @@ function describePoint(metric: WearableMetric, point: ChartDatum): string {
   if (point.value === null) return "-"
   switch (metric) {
     case "steps":
-      return `${formatNumber(point.value)} langkah`
+      return `${formatNumber(point.value)} steps`
     case "heart-rate":
       return point.range ? `${point.range[0]}–${point.range[1]} bpm` : `${point.value} bpm`
     case "sleep":
@@ -71,7 +71,7 @@ function selectCellFill(metric: WearableMetric, period: WearablePeriod, point: C
 }
 
 function selectYTickFormatter(metric: WearableMetric): ((value: number) => string) | undefined {
-  if (metric === "sleep") return (minutes) => `${Math.round(minutes / MINUTES_PER_HOUR)} j`
+  if (metric === "sleep") return (minutes) => `${Math.round(minutes / MINUTES_PER_HOUR)} h`
   return metric === "steps" ? formatNumber : undefined
 }
 

@@ -79,7 +79,7 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
         }
       } catch (err) {
         console.error("Gagal memuat inisialisasi rekam medis:", err)
-        if (isMounted) setErrorMessage((err as Error).message || "Gagal memuat data permintaan.")
+        if (isMounted) setErrorMessage((err as Error).message || "Failed to load request data.")
       } finally {
         if (isMounted) setIsLoading(false)
       }
@@ -99,17 +99,17 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
     setErrorMessage(null)
 
     if (!name.trim()) {
-      setErrorMessage("Nama pasien tidak boleh kosong.")
+      setErrorMessage("Patient name cannot be empty.")
       return
     }
 
     if (!birthDate) {
-      setErrorMessage("Tanggal lahir wajib diisi.")
+      setErrorMessage("Date of birth is required.")
       return
     }
 
     if (!phone.trim()) {
-      setErrorMessage("Nomor HP wajib diisi.")
+      setErrorMessage("Phone number is required.")
       return
     }
 
@@ -145,7 +145,7 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
       router.push(routes.hospital.patientList)
     } catch (err) {
       console.error("Gagal menyimpan rekam medis:", err)
-      setErrorMessage((err as Error).message || "Gagal membuat rekam medis.")
+      setErrorMessage((err as Error).message || "Failed to create the medical record.")
     } finally {
       setIsSaving(false)
     }
@@ -155,7 +155,7 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center p-12">
         <Loader2 className="size-8 animate-spin text-primary" />
-        <p className="mt-3 text-sm text-muted-foreground">Menyiapkan nomor rekam medis otomatis...</p>
+        <p className="mt-3 text-sm text-muted-foreground">Preparing an automatic medical record number...</p>
       </div>
     )
   }
@@ -163,13 +163,13 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
   return (
     <>
       <PageHeader
-        title="Formulir Rekam Medis Baru"
-        description={`Terima permintaan dan terbitkan Rekam Medis untuk ${initData?.user.name || "Pasien"}.`}
+        title="New Medical Record Form"
+        description={`Accept the request and issue a Medical Record for ${initData?.user.name || "Patient"}.`}
         actions={
           <Button asChild variant="outline" size="sm" className="rounded-full">
             <Link href={routes.hospital.requests}>
               <ChevronLeft className="mr-1 size-4" />
-              Kembali ke Permintaan
+              Back to Requests
             </Link>
           </Button>
         }
@@ -191,10 +191,10 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
                 <div>
                   <CardTitle className="type-heading flex items-center gap-2">
                     <FileText className="size-5 text-primary" />
-                    Identitas Rekam Medis
+                    Medical Record Identity
                   </CardTitle>
                   <CardDescription className="text-xs">
-                    Nomor Rekam Medis (MRN) di-generate otomatis oleh sistem backend.
+                    The Medical Record Number (MRN) is generated automatically by the backend.
                   </CardDescription>
                 </div>
                 <Badge variant="outline" className="border-primary/30 bg-primary/10 text-primary px-3 py-1 font-mono text-xs">
@@ -205,7 +205,7 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
             <CardContent className="grid gap-4 p-6 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="mrn" className="text-xs font-semibold text-muted-foreground">
-                  Nomor Rekam Medis (MRN)
+                  Medical Record Number (MRN)
                 </Label>
                 <Input
                   id="mrn"
@@ -217,35 +217,35 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
 
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-xs font-semibold text-muted-foreground">
-                  Nama Pasien <span className="text-destructive">*</span>
+                  Patient Name <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Nama lengkap pasien"
+                  placeholder="Patient's full name"
                   required
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="gender" className="text-xs font-semibold text-muted-foreground">
-                  Jenis Kelamin <span className="text-destructive">*</span>
+                  Gender <span className="text-destructive">*</span>
                 </Label>
                 <Select value={gender} onValueChange={(val: "male" | "female") => setGender(val)}>
                   <SelectTrigger id="gender" className="bg-card">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="male">Laki-laki (Male)</SelectItem>
-                    <SelectItem value="female">Perempuan (Female)</SelectItem>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="female">Female</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="birthDate" className="text-xs font-semibold text-muted-foreground">
-                  Tanggal Lahir <span className="text-destructive">*</span>
+                  Date of Birth <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="birthDate"
@@ -258,7 +258,7 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
 
               <div className="space-y-2">
                 <Label htmlFor="phone" className="text-xs font-semibold text-muted-foreground">
-                  Nomor HP Pasien <span className="text-destructive">*</span>
+                  Patient Phone Number <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="phone"
@@ -271,7 +271,7 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
 
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-xs font-semibold text-muted-foreground">
-                  Email Akun Terhubung
+                  Linked Account Email
                 </Label>
                 <Input
                   id="email"
@@ -283,13 +283,13 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
 
               <div className="sm:col-span-2 space-y-2">
                 <Label htmlFor="address" className="text-xs font-semibold text-muted-foreground">
-                  Alamat Domisili
+                  Home Address
                 </Label>
                 <Textarea
                   id="address"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Alamat tempat tinggal pasien..."
+                  placeholder="Patient's home address..."
                   rows={2}
                 />
               </div>
@@ -301,25 +301,25 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
             <CardHeader className="border-b pb-4">
               <CardTitle className="type-heading flex items-center gap-2">
                 <User className="size-5 text-primary" />
-                Data Wali Pasien (Opsional)
+                Patient Guardian (Optional)
               </CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4 p-6 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="guardianName" className="text-xs font-semibold text-muted-foreground">
-                  Nama Wali
+                  Guardian Name
                 </Label>
                 <Input
                   id="guardianName"
                   value={guardianName}
                   onChange={(e) => setGuardianName(e.target.value)}
-                  placeholder="Nama keluarga atau wali penanggung jawab"
+                  placeholder="Family member or responsible guardian"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="guardianPhone" className="text-xs font-semibold text-muted-foreground">
-                  Nomor HP Wali
+                  Guardian Phone Number
                 </Label>
                 <Input
                   id="guardianPhone"
@@ -336,43 +336,43 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
             <CardHeader className="border-b pb-4">
               <CardTitle className="type-heading flex items-center gap-2">
                 <ShieldCheck className="size-5 text-primary" />
-                Informasi Medis Awal
+                Initial Medical Information
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 p-6">
               <div className="space-y-2">
                 <Label htmlFor="diagnosis" className="text-xs font-semibold text-muted-foreground">
-                  Diagnosis Utama / Catatan Awal
+                  Primary Diagnosis / Initial Notes
                 </Label>
                 <Input
                   id="diagnosis"
                   value={primaryDiagnosis}
                   onChange={(e) => setPrimaryDiagnosis(e.target.value)}
-                  placeholder="Contoh: Evaluasi Hipertensi Primer"
+                  placeholder="Example: Primary Hypertension Evaluation"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="conditions" className="text-xs font-semibold text-muted-foreground">
-                  Riwayat Penyakit / Kondisi (Pisahkan dengan koma)
+                  Medical History / Conditions (comma separated)
                 </Label>
                 <Input
                   id="conditions"
                   value={conditionsText}
                   onChange={(e) => setConditionsText(e.target.value)}
-                  placeholder="Contoh: Hipertensi, Asma, Maag"
+                  placeholder="Example: Hypertension, Asthma, Gastritis"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="allergies" className="text-xs font-semibold text-muted-foreground">
-                  Riwayat Alergi Obat / Makanan (Pisahkan dengan koma)
+                  Drug / Food Allergies (comma separated)
                 </Label>
                 <Input
                   id="allergies"
                   value={allergiesText}
                   onChange={(e) => setAllergiesText(e.target.value)}
-                  placeholder="Contoh: Penisilin, Seafood"
+                  placeholder="Example: Penicillin, Seafood"
                 />
               </div>
             </CardContent>
@@ -387,7 +387,7 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
               disabled={isSaving}
               className="rounded-full px-5"
             >
-              <Link href={routes.hospital.requests}>Batal</Link>
+              <Link href={routes.hospital.requests}>Cancel</Link>
             </Button>
             <Button
               type="submit"
@@ -395,7 +395,7 @@ export function CreateRecordView({ requestId }: CreateRecordViewProps) {
               className="rounded-full px-6 gap-2 font-semibold shadow-sm"
             >
               {isSaving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
-              Simpan & Daftarkan Pasien
+              Save & Register Patient
             </Button>
           </div>
         </form>

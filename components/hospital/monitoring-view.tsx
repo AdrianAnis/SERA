@@ -57,12 +57,12 @@ export function MonitoringView({ patientId }: MonitoringViewProps) {
     <>
       <PageHeader
         title="Monitoring"
-        description={patient ? `Perilaku dan laporan ${patient.name}.` : "Pasien tidak ditemukan."}
+        description={patient ? `Behavior and reports for ${patient.name}.` : "Patient not found."}
         actions={
           <Button asChild variant="outline">
             <Link href={routes.hospital.patientDetail(patientId)}>
               <ChevronLeft />
-              Kembali ke pasien
+              Back to patient
             </Link>
           </Button>
         }
@@ -71,8 +71,8 @@ export function MonitoringView({ patientId }: MonitoringViewProps) {
         <section className="space-y-4 self-start rounded-2xl border bg-card p-5 xl:col-span-2">
           <header className="flex items-start justify-between gap-4">
             <div>
-              <h2 className="type-subheading">Tingkat Kepatuhan Pasien</h2>
-              <p className="type-caption">7 hari terakhir. Data perilaku, bukan indikator kesembuhan.</p>
+              <h2 className="type-subheading">Patient Adherence</h2>
+              <p className="type-caption">Last 7 days. Behavioral data, not a recovery indicator.</p>
             </div>
             <span className="text-3xl leading-none font-semibold tabular-nums">{ratio === null ? "-" : `${Math.round(ratio * 100)}%`}</span>
           </header>
@@ -80,17 +80,17 @@ export function MonitoringView({ patientId }: MonitoringViewProps) {
           <AdherenceTrendSummaryCards summary={selectAdherenceTrendSummary(trend)} />
         </section>
 
-        <ConversationSummaryCard patientName={patient?.name ?? "Pasien"} summary={conversationSummary} />
+        <ConversationSummaryCard patientName={patient?.name ?? "Patient"} summary={conversationSummary} />
 
-        <WearableSection patientId={patientId} patientName={patient?.name ?? "Pasien"} />
+        <WearableSection patientId={patientId} patientName={patient?.name ?? "Patient"} />
 
         <section className="rounded-2xl border bg-card xl:col-span-3">
           <header className="border-b px-5 py-4">
-            <h2 className="type-subheading">Laporan pasien</h2>
-            <p className="type-caption">Keluhan dan kendala yang dikirim pasien.</p>
+            <h2 className="type-subheading">Patient reports</h2>
+            <p className="type-caption">Complaints and obstacles submitted by the patient.</p>
           </header>
           {feedback.length === 0 ? (
-            <p className="p-8 text-center type-caption">Belum ada laporan dari pasien.</p>
+            <p className="p-8 text-center type-caption">No reports from this patient yet.</p>
           ) : (
             <ul className="divide-y">
               {feedback.map((entry) => (
@@ -104,7 +104,7 @@ export function MonitoringView({ patientId }: MonitoringViewProps) {
                   </div>
                   {entry.status === "open" ? (
                     <Button variant="outline" onClick={() => void resolveFeedback(entry.id, patientId, doctorSession?.token)}>
-                      Tandai sudah ditinjau
+                      Mark as reviewed
                     </Button>
                   ) : null}
                 </li>

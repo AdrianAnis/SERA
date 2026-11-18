@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { CreateRecordView } from "@/components/hospital/create-record-view"
 
 export const metadata: Metadata = {
-  title: "Formulir Rekam Medis Baru | Sera",
-  description: "Terbitkan nomor rekam medis dan data klinis awal pasien baru.",
+  title: "New Medical Record Form | Sera",
+  description: "Issue a medical record number and initial clinical data for a new patient.",
 }
 
 type PageProps = {

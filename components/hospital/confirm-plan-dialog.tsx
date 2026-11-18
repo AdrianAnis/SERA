@@ -16,9 +16,9 @@ type ConfirmPlanDialogProps = {
 }
 
 const CHANGE_STYLE: Record<PlanChangeType, { label: string; icon: typeof Plus; className: string }> = {
-  added: { label: "Ditambah", icon: Plus, className: "bg-success/15 text-success" },
-  changed: { label: "Diubah", icon: Pencil, className: "bg-warning/20 text-warning-foreground" },
-  removed: { label: "Dihapus", icon: Minus, className: "bg-destructive/10 text-destructive" },
+  added: { label: "Added", icon: Plus, className: "bg-success/15 text-success" },
+  changed: { label: "Changed", icon: Pencil, className: "bg-warning/20 text-warning-foreground" },
+  removed: { label: "Removed", icon: Minus, className: "bg-destructive/10 text-destructive" },
 }
 
 export function ConfirmPlanDialog({ isOpen, versionLabel, patientName, changes, onOpenChange, onConfirm }: ConfirmPlanDialogProps) {
@@ -26,16 +26,16 @@ export function ConfirmPlanDialog({ isOpen, versionLabel, patientName, changes, 
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-dvh gap-4 overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Selesaikan sesi dan kirim care plan {versionLabel}</DialogTitle>
+          <DialogTitle>Finish session and send care plan {versionLabel}</DialogTitle>
           <DialogDescription>
-            Setelah sesi diselesaikan, versi ini langsung aktif untuk {patientName} dan menggantikan versi sebelumnya.
+            Once the session is finished, this version becomes active for {patientName} immediately and replaces the previous version.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-2">
-          <p className="text-sm font-medium">Ringkasan perubahan</p>
+          <p className="text-sm font-medium">Summary of changes</p>
           {changes.length === 0 ? (
-            <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">Tidak ada perubahan dibanding versi aktif.</p>
+            <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">No changes compared to the active version.</p>
           ) : (
             <ul className="space-y-2">
               {changes.map((change) => {
@@ -65,10 +65,10 @@ export function ConfirmPlanDialog({ isOpen, versionLabel, patientName, changes, 
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-            Periksa lagi
+            Review again
           </Button>
           <Button type="button" onClick={onConfirm}>
-            Selesaikan sesi dan kirim ke pasien
+            Finish session and send to patient
           </Button>
         </DialogFooter>
       </DialogContent>

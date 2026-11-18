@@ -69,25 +69,25 @@ function Field({ form, name, label, onEdit, inputType = "text", valueKind = "tex
 
 export function ItemFields({ form, index, kind, onEdit }: ItemFieldsProps) {
   const base = { form, onEdit }
-  const instructionField = <Field {...base} name={`items.${index}.instruction`} label="Instruksi untuk pasien" />
+  const instructionField = <Field {...base} name={`items.${index}.instruction`} label="Instructions for patient" />
 
   switch (kind) {
     case "medication":
       return (
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field {...base} name={`items.${index}.drug`} label="Nama obat" />
-          <Field {...base} name={`items.${index}.dose`} label="Dosis" />
-          <Field {...base} name={`items.${index}.times`} label="Jam minum (pisahkan koma)" valueKind="list" />
-          <Field {...base} name={`items.${index}.durationDays`} label="Lama minum (hari)" inputType="number" valueKind="number" />
+          <Field {...base} name={`items.${index}.drug`} label="Medication name" />
+          <Field {...base} name={`items.${index}.dose`} label="Dose" />
+          <Field {...base} name={`items.${index}.times`} label="Dose times (comma separated)" valueKind="list" />
+          <Field {...base} name={`items.${index}.durationDays`} label="Duration (days)" inputType="number" valueKind="number" />
           <div className="sm:col-span-2">{instructionField}</div>
         </div>
       )
     case "diet":
       return (
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field {...base} name={`items.${index}.category`} label="Kategori makanan" />
+          <Field {...base} name={`items.${index}.category`} label="Food category" />
           <div className="space-y-1.5">
-            <Label htmlFor={`field-items.${index}.rule`}>Aturan</Label>
+            <Label htmlFor={`field-items.${index}.rule`}>Rule</Label>
             <Controller
               control={form.control}
               name={`items.${index}.rule`}
@@ -119,24 +119,24 @@ export function ItemFields({ form, index, kind, onEdit }: ItemFieldsProps) {
     case "activity":
       return (
         <div className="grid gap-3 sm:grid-cols-3">
-          <Field {...base} name={`items.${index}.activity`} label="Aktivitas" />
-          <Field {...base} name={`items.${index}.frequencyPerWeek`} label="Kali per minggu" inputType="number" valueKind="number" />
-          <Field {...base} name={`items.${index}.durationMinutes`} label="Durasi (menit)" inputType="number" valueKind="number" />
+          <Field {...base} name={`items.${index}.activity`} label="Activity" />
+          <Field {...base} name={`items.${index}.frequencyPerWeek`} label="Times per week" inputType="number" valueKind="number" />
+          <Field {...base} name={`items.${index}.durationMinutes`} label="Duration (minutes)" inputType="number" valueKind="number" />
           <div className="sm:col-span-3">{instructionField}</div>
         </div>
       )
     case "restriction":
       return (
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field {...base} name={`items.${index}.subject`} label="Yang dibatasi" />
-          <Field {...base} name={`items.${index}.durationDays`} label="Lama (hari, kosong = selama pengobatan)" inputType="number" valueKind="nullable-number" />
+          <Field {...base} name={`items.${index}.subject`} label="Restricted item" />
+          <Field {...base} name={`items.${index}.durationDays`} label="Duration (days, empty = throughout treatment)" inputType="number" valueKind="nullable-number" />
           <div className="sm:col-span-2">{instructionField}</div>
         </div>
       )
     case "followUp":
       return (
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field {...base} name={`items.${index}.date`} label="Tanggal kontrol" inputType="date" />
+          <Field {...base} name={`items.${index}.date`} label="Follow-up date" inputType="date" />
           {instructionField}
         </div>
       )

@@ -43,13 +43,13 @@ export function ConsultationRow({ consultation, patientName, needsReconfirmation
         <div className="min-w-0">
           <p className="text-sm font-medium">{patientName}</p>
           <p className="type-caption">{consultation.topic}</p>
-          {isCancelled && consultation.cancelReason ? <p className="type-caption">Alasan: {consultation.cancelReason}</p> : null}
+          {isCancelled && consultation.cancelReason ? <p className="type-caption">Reason: {consultation.cancelReason}</p> : null}
         </div>
       </Link>
       {needsReconfirmation ? (
         <p className="flex items-start gap-2 rounded-lg bg-warning/15 p-3 text-sm text-warning-foreground">
           <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-          Jadwal ini di luar jam konsultasi Anda. Konfirmasi ulang atau batalkan.
+          This appointment is outside your consultation hours. Reconfirm or cancel it.
         </p>
       ) : null}
       {consultation.status === "scheduled" ? (
@@ -57,7 +57,7 @@ export function ConsultationRow({ consultation, patientName, needsReconfirmation
           {needsReconfirmation ? (
             <Button type="button" className="flex-1" onClick={() => onReconfirm(consultation)}>
               <CalendarCheck />
-              Konfirmasi ulang
+              Reconfirm
             </Button>
           ) : null}
           <Button
@@ -67,7 +67,7 @@ export function ConsultationRow({ consultation, patientName, needsReconfirmation
             onClick={() => onCancel(consultation)}
           >
             <CalendarX2 />
-            Batalkan jadwal
+            Cancel appointment
           </Button>
         </div>
       ) : null}

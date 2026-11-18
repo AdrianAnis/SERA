@@ -20,11 +20,11 @@ export function DashboardAttentionCard({ items, patientNames }: DashboardAttenti
   return (
     <section className="rounded-2xl border bg-card">
       <header className="border-b px-5 py-4">
-        <h2 className="type-subheading">Perlu ditinjau</h2>
-        <p className="type-caption">Laporan pasien dan eskalasi yang menunggu Anda.</p>
+        <h2 className="type-subheading">Needs review</h2>
+        <p className="type-caption">Patient reports and escalations waiting for you.</p>
       </header>
       {items.length === 0 ? (
-        <p className="p-8 text-center type-caption">Semua sudah ditinjau.</p>
+        <p className="p-8 text-center type-caption">All caught up.</p>
       ) : (
         <ul className="divide-y">
           {items.map((item) => {
@@ -43,7 +43,7 @@ export function DashboardAttentionCard({ items, patientNames }: DashboardAttenti
                   </p>
                 </div>
                 <Link href={routes.hospital.monitoring(item.patientId)} className="shrink-0 text-sm font-medium text-primary hover:underline">
-                  Tinjau
+                  Review
                 </Link>
               </li>
             )

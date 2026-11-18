@@ -45,7 +45,7 @@ function CalendarDayCell({ day, isCurrentMonth, isToday, isSelected, isInactive,
     <button
       type="button"
       aria-pressed={isSelected}
-      aria-label={`${formatDate(day, "d MMMM yyyy")}, ${consultations.length} konsultasi`}
+      aria-label={`${formatDate(day, "d MMMM yyyy")}, ${consultations.length} consultation(s)`}
       onClick={() => onSelect(toDateKey(day))}
       className={cn(
         "flex min-h-24 flex-col gap-1 border-r border-b p-1.5 text-left align-top transition-colors hover:bg-muted/60 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
@@ -67,7 +67,7 @@ function CalendarDayCell({ day, isCurrentMonth, isToday, isSelected, isInactive,
           {toTimeKey(consultation.startsAt)} {(patientNames[consultation.patientId] ?? "").split(" ")[0]}
         </span>
       ))}
-      {hiddenCount > 0 ? <span className="px-1.5 text-[11px] text-muted-foreground">+{hiddenCount} lagi</span> : null}
+      {hiddenCount > 0 ? <span className="px-1.5 text-[11px] text-muted-foreground">+{hiddenCount} more</span> : null}
     </button>
   )
 }
@@ -91,12 +91,12 @@ export function ConsultationCalendar({
         <h2 className="type-subheading">{formatDate(month, "MMMM yyyy")}</h2>
         <div className="flex items-center gap-2">
           <Button type="button" variant="outline" size="sm" onClick={onGoToToday}>
-            Hari ini
+            Today
           </Button>
-          <Button type="button" variant="outline" size="icon" aria-label="Bulan sebelumnya" onClick={() => onShiftMonth(-1)}>
+          <Button type="button" variant="outline" size="icon" aria-label="Previous month" onClick={() => onShiftMonth(-1)}>
             <ChevronLeft />
           </Button>
-          <Button type="button" variant="outline" size="icon" aria-label="Bulan berikutnya" onClick={() => onShiftMonth(1)}>
+          <Button type="button" variant="outline" size="icon" aria-label="Next month" onClick={() => onShiftMonth(1)}>
             <ChevronRight />
           </Button>
         </div>

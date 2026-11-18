@@ -80,7 +80,7 @@ export function WearablePeriodExplorer({ patientId, metric }: WearablePeriodExpl
           type="button"
           variant="outline"
           size="icon"
-          aria-label="Periode sebelumnya"
+          aria-label="Previous period"
           onClick={() => setAnchorKey(selectShiftedAnchor(period, anchorKey, -1, todayKey))}
         >
           <ChevronLeft />
@@ -92,7 +92,7 @@ export function WearablePeriodExplorer({ patientId, metric }: WearablePeriodExpl
           type="button"
           variant="outline"
           size="icon"
-          aria-label="Periode berikutnya"
+          aria-label="Next period"
           disabled={anchorKey >= todayKey}
           onClick={() => setAnchorKey(selectShiftedAnchor(period, anchorKey, 1, todayKey))}
         >
@@ -115,7 +115,7 @@ export function WearablePeriodExplorer({ patientId, metric }: WearablePeriodExpl
       <div
         className="h-72 w-full"
         role="img"
-        aria-label={`Grafik ${WEARABLE_METRIC_LABEL[metric]} periode ${WEARABLE_PERIOD_LABEL[period].toLowerCase()}`}
+        aria-label={`${WEARABLE_METRIC_LABEL[metric]} chart, ${WEARABLE_PERIOD_LABEL[period].toLowerCase()} period`}
       >
         <WearableChart metric={metric} period={period} points={trend.points} />
       </div>

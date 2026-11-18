@@ -62,17 +62,17 @@ export function DashboardView() {
 
   const nextConsultation = selectNextConsultation(doctorConsultations, now)
   const heroAction = nextConsultation
-    ? { href: routes.hospital.consultationsOn(toDateKey(nextConsultation.startsAt)), label: "Tinjau konsultasi terdekat" }
-    : { href: routes.hospital.consultations, label: "Lihat jadwal konsultasi" }
+    ? { href: routes.hospital.consultationsOn(toDateKey(nextConsultation.startsAt)), label: "Review next consultation" }
+    : { href: routes.hospital.consultations, label: "View consultations" }
 
   return (
     <div className="space-y-6 p-4 md:p-6">
-      <DashboardHero doctorName={doctor?.name ?? "Dokter"} now={now} pendingCount={attentionItems.length} action={heroAction} />
+      <DashboardHero doctorName={doctor?.name ?? "Doctor"} now={now} pendingCount={attentionItems.length} action={heroAction} />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <DashboardStatCard icon={Users} label="Pasien" value={patients.length} href={routes.hospital.patientList} />
-        <DashboardStatCard icon={CalendarClock} label="Jadwal konsultasi hari ini" value={todayConsultationCount} href={routes.hospital.consultations} />
-        <DashboardStatCard icon={CalendarCheck} label="Jadwal yang mesti dikonfirmasi ulang" value={reconfirmationCount} href={routes.hospital.consultations} />
+        <DashboardStatCard icon={Users} label="Patients" value={patients.length} href={routes.hospital.patientList} />
+        <DashboardStatCard icon={CalendarClock} label="Consultations today" value={todayConsultationCount} href={routes.hospital.consultations} />
+        <DashboardStatCard icon={CalendarCheck} label="Appointments to reconfirm" value={reconfirmationCount} href={routes.hospital.consultations} />
       </div>
 
       <div className="grid items-start gap-6 xl:grid-cols-3">

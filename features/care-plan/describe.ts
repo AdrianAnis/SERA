@@ -9,7 +9,7 @@ export type ItemDetailRow = {
 }
 
 function describeFrequency(timesPerDay: number): string {
-  return timesPerDay === 1 ? "Sekali sehari" : `${timesPerDay} kali sehari`
+  return timesPerDay === 1 ? "Once daily" : `${timesPerDay} times daily`
 }
 
 export function getItemTitle(item: CarePlanItem): string {
@@ -21,9 +21,9 @@ export function getItemTitle(item: CarePlanItem): string {
     case "activity":
       return item.activity
     case "restriction":
-      return `Batasi ${item.subject.toLowerCase()}`
+      return `Limit ${item.subject.toLowerCase()}`
     case "followUp":
-      return "Kontrol ke dokter"
+      return "Doctor follow-up"
     default:
       return assertNever(item)
   }
@@ -32,11 +32,11 @@ export function getItemTitle(item: CarePlanItem): string {
 export function getItemSummary(item: CarePlanItem): string {
   switch (item.kind) {
     case "medication":
-      return `${describeFrequency(item.times.length)}, jam ${item.times.join(" dan ")}`
+      return `${describeFrequency(item.times.length)}, at ${item.times.join(" and ")}`
     case "diet":
       return item.instruction
     case "activity":
-      return `${item.durationMinutes} menit, ${item.frequencyPerWeek}x seminggu`
+      return `${item.durationMinutes} min, ${item.frequencyPerWeek}x a week`
     case "restriction":
       return item.instruction
     case "followUp":
@@ -50,33 +50,33 @@ export function getItemDetailRows(item: CarePlanItem): ItemDetailRow[] {
   switch (item.kind) {
     case "medication":
       return [
-        { label: "Dosis", value: item.dose },
-        { label: "Frekuensi", value: describeFrequency(item.times.length) },
-        { label: "Jam minum", value: item.times.join(", ") },
-        { label: "Lama minum", value: `${item.durationDays} hari` },
-        { label: "Cara minum", value: item.instruction },
+        { label: "Dose", value: item.dose },
+        { label: "Frequency", value: describeFrequency(item.times.length) },
+        { label: "Times", value: item.times.join(", ") },
+        { label: "Duration", value: `${item.durationDays} days` },
+        { label: "Instructions", value: item.instruction },
       ]
     case "diet":
       return [
-        { label: "Aturan", value: DIET_RULE_LABEL[item.rule] },
-        { label: "Kategori", value: item.category },
+        { label: "Rule", value: DIET_RULE_LABEL[item.rule] },
+        { label: "Category", value: item.category },
         { label: "Catatan", value: item.instruction },
       ]
     case "activity":
       return [
-        { label: "Durasi", value: `${item.durationMinutes} menit` },
-        { label: "Frekuensi", value: `${item.frequencyPerWeek}x seminggu` },
+        { label: "Duration", value: `${item.durationMinutes} min` },
+        { label: "Frequency", value: `${item.frequencyPerWeek}x a week` },
         { label: "Catatan", value: item.instruction },
       ]
     case "restriction":
       return [
-        { label: "Yang dibatasi", value: item.subject },
-        { label: "Lama", value: item.durationDays === null ? "Selama masa pengobatan" : `${item.durationDays} hari` },
+        { label: "Restricted", value: item.subject },
+        { label: "Duration", value: item.durationDays === null ? "Throughout treatment" : `${item.durationDays} days` },
         { label: "Catatan", value: item.instruction },
       ]
     case "followUp":
       return [
-        { label: "Tanggal", value: formatDate(item.date, "EEEE, d MMMM yyyy") },
+        { label: "Date", value: formatDate(item.date, "EEEE, d MMMM yyyy") },
         { label: "Catatan", value: item.instruction },
       ]
     default:

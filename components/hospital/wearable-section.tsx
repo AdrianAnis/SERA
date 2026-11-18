@@ -62,8 +62,8 @@ export function WearableSection({ patientId, patientName }: WearableSectionProps
   return (
     <section className="rounded-2xl border bg-card xl:col-span-3">
       <header className="border-b px-5 py-4">
-        <h2 className="type-subheading">Data kesehatan dari smartwatch</h2>
-        <p className="type-caption">Langkah, detak jantung, tidur, dan saturasi oksigen pasien.</p>
+        <h2 className="type-subheading">Smartwatch health data</h2>
+        <p className="type-caption">Steps, heart rate, sleep, and oxygen saturation of the patient.</p>
       </header>
       {isConnected ? (
         <div className="grid gap-4 p-5 sm:grid-cols-2 xl:grid-cols-4">

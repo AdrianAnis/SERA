@@ -70,27 +70,27 @@ export function LoginView() {
         <RingOrnament />
         <Link href={routes.hospital.landing} className="relative flex min-h-11 w-fit items-center gap-1 text-sm font-medium text-primary-foreground/80 hover:text-primary-foreground">
           <ChevronLeft className="size-5" />
-          Kembali ke beranda
+          Back to home
         </Link>
         <div className="relative space-y-4">
           <BrandLogo size="lg" isInverted />
-          <h1 className="type-display text-primary-foreground">Workspace dokter</h1>
+          <h1 className="type-display text-primary-foreground">Doctor workspace</h1>
           <p className="max-w-md text-primary-foreground/80">
-            Susun, konfirmasi, dan pantau care plan pasien Anda. Perubahan langsung diterima pasien di aplikasi mereka.
+            Build, confirm, and monitor care plans for your patients. Changes reach patients in their app instantly.
           </p>
         </div>
-        <p className="relative text-sm text-primary-foreground/70">Sera untuk Dokter</p>
+        <p className="relative text-sm text-primary-foreground/70">Sera for Doctors</p>
       </div>
 
       <div className="flex items-center justify-center bg-card px-4 py-10 md:px-12">
         <div className="w-full max-w-md space-y-6">
           <Link href={routes.hospital.landing} className="flex min-h-11 w-fit items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground lg:hidden">
             <ChevronLeft className="size-5" />
-            Kembali
+            Back
           </Link>
           <div className="space-y-1">
-            <h2 className="type-title">Masuk</h2>
-            <p className="type-caption">Gunakan email rumah sakit Anda.</p>
+            <h2 className="type-title">Sign in</h2>
+            <p className="type-caption">Use your hospital email.</p>
           </div>
 
           {errorMessage && (
@@ -106,15 +106,15 @@ export function LoginView() {
                 control={form.control}
                 name="email"
                 label="Email"
-                placeholder="nama@rumahsakit.id"
+                placeholder="name@hospital.com"
                 type="email"
                 autoComplete="email"
               />
               <FloatingField
                 control={form.control}
                 name="password"
-                label="Kata sandi"
-                placeholder="Masukkan kata sandi"
+                label="Password"
+                placeholder="Enter your password"
                 type="password"
                 autoComplete="current-password"
               />
@@ -122,10 +122,10 @@ export function LoginView() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 size-4 animate-spin" />
-                    Memverifikasi...
+                    Verifying...
                   </>
                 ) : (
-                  "Masuk"
+                  "Sign in"
                 )}
               </Button>
             </form>

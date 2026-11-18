@@ -46,13 +46,13 @@ export function SeraConnectionCard({ patientId, patientName, phone }: SeraConnec
       await connectionApi.requestLink(patientId)
       setActionMessage({
         type: "success",
-        text: "Permintaan penghubungan berhasil dikirim ke aplikasi pasien.",
+        text: "Link request sent to the patient's app.",
       })
       await fetchStatus()
     } catch (err) {
       setActionMessage({
         type: "error",
-        text: (err as Error).message || "Gagal mengirim permintaan penghubungan.",
+        text: (err as Error).message || "Failed to send the link request.",
       })
     } finally {
       setIsActionLoading(false)
@@ -66,13 +66,13 @@ export function SeraConnectionCard({ patientId, patientName, phone }: SeraConnec
       await connectionApi.invitePatient(patientId)
       setActionMessage({
         type: "success",
-        text: "Undangan aktivasi akun SERA berhasil dibuat.",
+        text: "SERA account activation invite created.",
       })
       await fetchStatus()
     } catch (err) {
       setActionMessage({
         type: "error",
-        text: (err as Error).message || "Gagal membuat undangan aktivasi.",
+        text: (err as Error).message || "Failed to create the activation invite.",
       })
     } finally {
       setIsActionLoading(false)
@@ -91,7 +91,7 @@ export function SeraConnectionCard({ patientId, patientName, phone }: SeraConnec
         <h2 className="type-subheading">Koneksi Aplikasi SERA</h2>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" />
-          <span>Memeriksa status akun SERA...</span>
+          <span>Checking SERA account status...</span>
         </div>
       </section>
     )
@@ -106,25 +106,25 @@ export function SeraConnectionCard({ patientId, patientName, phone }: SeraConnec
         {status === "connected" && (
           <Badge className="bg-emerald-500/15 text-emerald-700 hover:bg-emerald-500/20 border-emerald-500/30 gap-1.5 py-1">
             <CheckCircle2 className="size-3.5" />
-            Terhubung
+            Connected
           </Badge>
         )}
         {status === "pending" && (
           <Badge className="bg-amber-500/15 text-amber-700 hover:bg-amber-500/20 border-amber-500/30 gap-1.5 py-1">
             <Clock className="size-3.5" />
-            Menunggu Persetujuan
+            Awaiting Approval
           </Badge>
         )}
         {status === "unlinked_registered" && (
           <Badge className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/20 border-blue-500/30 gap-1.5 py-1">
             <UserCheck className="size-3.5" />
-            Akun Ditemukan
+            Account Found
           </Badge>
         )}
         {status === "unregistered" && (
           <Badge variant="outline" className="text-muted-foreground gap-1.5 py-1">
             <AlertCircle className="size-3.5" />
-            Belum Terdaftar
+            Not Registered
           </Badge>
         )}
       </div>
@@ -151,16 +151,16 @@ export function SeraConnectionCard({ patientId, patientName, phone }: SeraConnec
           <p className="font-medium text-foreground">{data.user.name}</p>
           <p className="text-muted-foreground text-xs">{data.user.email} · {data.user.phone || phone}</p>
           <p className="text-xs text-emerald-700 font-medium pt-1">
-            ✓ Pasien dapat menerima sinkronisasi Care Plan dan notifikasi langsung di aplikasi SERA.
+            ✓ The patient can receive Care Plan syncs and notifications directly in the SERA app.
           </p>
         </div>
       )}
 
       {status === "pending" && (
         <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-3.5 text-xs text-amber-900 space-y-2">
-          <p className="font-medium">Permintaan sedang menunggu konfirmasi pasien</p>
+          <p className="font-medium">Request is awaiting patient confirmation</p>
           <p className="text-muted-foreground">
-            Notifikasi telah dikirim ke perangkat pasien. Care Plan akan tersinkronisasi otomatis begitu pasien menyetujui.
+            A notification has been sent to the device of the patient. The Care Plan will sync automatically once the patient approves.
           </p>
         </div>
       )}
@@ -168,7 +168,7 @@ export function SeraConnectionCard({ patientId, patientName, phone }: SeraConnec
       {status === "unlinked_registered" && (
         <div className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            Nomor HP ({phone}) cocok dengan akun pengguna SERA terdaftar ({data?.user?.email}).
+            Phone number ({phone}) matches a registered SERA user account ({data?.user?.email}).
           </p>
           <Button
             size="sm"
@@ -181,7 +181,7 @@ export function SeraConnectionCard({ patientId, patientName, phone }: SeraConnec
             ) : (
               <Send className="size-4" />
             )}
-            Kirim Permintaan Penghubungan
+            Send Link Request
           </Button>
         </div>
       )}
@@ -189,14 +189,14 @@ export function SeraConnectionCard({ patientId, patientName, phone }: SeraConnec
       {status === "unregistered" && (
         <div className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            Pasien belum mendaftar di SERA Patient App. Kirim undangan aktivasi agar pasien dapat mengunduh dan menghubungkan rekam medisnya.
+            The patient has not registered in the SERA Patient App yet. Send an activation invite so they can download the app and link their medical record.
           </p>
 
           {data?.latestInvitation ? (
             <div className="rounded-xl border bg-muted/30 p-3 text-xs space-y-2">
               <div className="flex items-center justify-between text-muted-foreground">
-                <span>Link Aktivasi Terakhir:</span>
-                <span className="text-[11px]">Aktif s/d {new Date(data.latestInvitation.expiresAt).toLocaleDateString("id-ID")}</span>
+                <span>Latest Activation Link:</span>
+                <span className="text-[11px]">Valid until {new Date(data.latestInvitation.expiresAt).toLocaleDateString("en-US")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <input
@@ -232,7 +232,7 @@ export function SeraConnectionCard({ patientId, patientName, phone }: SeraConnec
               ) : (
                 <Link2 className="size-4" />
               )}
-              Buat Undangan Aktivasi
+              Create Activation Invite
             </Button>
           )}
         </div>

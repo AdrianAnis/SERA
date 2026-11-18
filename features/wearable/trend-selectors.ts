@@ -71,31 +71,31 @@ function buildRangeStats(metric: WearableMetric, readings: DailyReadings[]): Pic
     case "steps": {
       const avg = Math.round(mean(readings.map((reading) => reading.steps.total)))
       const totalSteps = sum(readings.map((reading) => reading.steps.total))
-      const average = stat("average", "Rata-rata harian", avg > 0 ? formatNumber(avg) : "0", "langkah")
-      return { headline: average, stats: [average, stat("total", "Total langkah", totalSteps > 0 ? formatNumber(totalSteps) : "0", "langkah")] }
+      const average = stat("average", "Daily average", avg > 0 ? formatNumber(avg) : "0", "steps")
+      return { headline: average, stats: [average, stat("total", "Total steps", totalSteps > 0 ? formatNumber(totalSteps) : "0", "steps")] }
     }
     case "heart-rate": {
       const validReadings = readings.filter((r) => r.heartRate.resting > 0)
       const hasData = validReadings.length > 0
       const range = hasData
-        ? stat("range", "Rentang denyut jantung", `${Math.min(...validReadings.map((r) => r.heartRate.min))}–${Math.max(...validReadings.map((r) => r.heartRate.max))}`, "bpm")
-        : stat("range", "Rentang denyut jantung", "-", "bpm")
-      const resting = stat("resting", "Denyut jantung istirahat", hasData ? String(Math.round(mean(validReadings.map((r) => r.heartRate.resting)))) : "-", "bpm")
+        ? stat("range", "Heart rate range", `${Math.min(...validReadings.map((r) => r.heartRate.min))}–${Math.max(...validReadings.map((r) => r.heartRate.max))}`, "bpm")
+        : stat("range", "Heart rate range", "-", "bpm")
+      const resting = stat("resting", "Resting heart rate", hasData ? String(Math.round(mean(validReadings.map((r) => r.heartRate.resting)))) : "-", "bpm")
       return { headline: range, stats: [range, resting] }
     }
     case "sleep": {
       const totalSleep = Math.round(mean(readings.map((reading) => reading.sleep.totalMinutes)))
       const napSleep = Math.round(mean(readings.map((reading) => reading.sleep.napMinutes)))
-      const average = stat("average", "Rata-rata tidur malam", totalSleep > 0 ? formatDuration(totalSleep) : "0 mnt", "")
-      return { headline: average, stats: [average, stat("nap", "Rata-rata tidur siang", napSleep > 0 ? formatDuration(napSleep) : "0 mnt", "")] }
+      const average = stat("average", "Average night sleep", totalSleep > 0 ? formatDuration(totalSleep) : "0 min", "")
+      return { headline: average, stats: [average, stat("nap", "Average nap", napSleep > 0 ? formatDuration(napSleep) : "0 min", "")] }
     }
     case "spo2": {
       const validSpo2 = readings.filter((r) => r.spo2.average > 0)
       const hasData = validSpo2.length > 0
-      const average = stat("average", "Rata-rata SpO₂", hasData ? String(Math.round(mean(validSpo2.map((r) => r.spo2.average)))) : "-", "%")
+      const average = stat("average", "Average SpO₂", hasData ? String(Math.round(mean(validSpo2.map((r) => r.spo2.average)))) : "-", "%")
       const range = hasData
-        ? stat("range", "Rentang SpO₂", `${Math.min(...validSpo2.map((r) => r.spo2.min))}–${Math.max(...validSpo2.map((r) => r.spo2.max))}`, "%")
-        : stat("range", "Rentang SpO₂", "-", "%")
+        ? stat("range", "SpO₂ range", `${Math.min(...validSpo2.map((r) => r.spo2.min))}–${Math.max(...validSpo2.map((r) => r.spo2.max))}`, "%")
+        : stat("range", "SpO₂ range", "-", "%")
       return { headline: average, stats: [average, range] }
     }
   }
@@ -109,27 +109,27 @@ function buildDayTrend(metric: WearableMetric, reading: DailyReadings, lastHour:
   switch (metric) {
     case "steps": {
       const total = sum(reading.steps.hourly.slice(0, lastHour + 1))
-      const headline = stat("total", "Langkah", total > 0 ? formatNumber(total) : "0", "langkah")
+      const headline = stat("total", "Steps", total > 0 ? formatNumber(total) : "0", "steps")
       return { points: hourPoints(reading.steps.hourly, lastHour), headline, stats: [headline] }
     }
     case "heart-rate": {
       const hasData = reading.heartRate.resting > 0 || reading.heartRate.hourly.some((v) => v > 0)
       const latest = reading.heartRate.hourly[lastHour] ?? reading.heartRate.resting
-      const headline = stat("latest", "Terakhir diperbarui", hasData && latest > 0 ? String(latest) : "-", "bpm")
+      const headline = stat("latest", "Last updated", hasData && latest > 0 ? String(latest) : "-", "bpm")
       return {
         points: hourPoints(reading.heartRate.hourly, lastHour),
         headline,
         stats: [
-          stat("range", "Rentang denyut jantung", hasData ? `${reading.heartRate.min}–${reading.heartRate.max}` : "-", "bpm"),
+          stat("range", "Heart rate range", hasData ? `${reading.heartRate.min}–${reading.heartRate.max}` : "-", "bpm"),
           headline,
-          stat("resting", "Denyut jantung istirahat", hasData && reading.heartRate.resting > 0 ? String(reading.heartRate.resting) : "-", "bpm"),
+          stat("resting", "Resting heart rate", hasData && reading.heartRate.resting > 0 ? String(reading.heartRate.resting) : "-", "bpm"),
         ],
       }
     }
     case "sleep": {
       const hasData = reading.sleep.totalMinutes > 0
-      const headline = stat("total", "Tidur malam", hasData ? formatDuration(reading.sleep.totalMinutes) : "0 mnt", "")
-      const nap = reading.sleep.napMinutes > 0 ? [stat("nap", "Tidur siang", formatDuration(reading.sleep.napMinutes), "")] : []
+      const headline = stat("total", "Night sleep", hasData ? formatDuration(reading.sleep.totalMinutes) : "0 min", "")
+      const nap = reading.sleep.napMinutes > 0 ? [stat("nap", "Nap", formatDuration(reading.sleep.napMinutes), "")] : []
       return {
         points: (Object.keys(SLEEP_STAGE_LABEL) as (keyof typeof SLEEP_STAGE_LABEL)[]).map((stage) => ({
           key: stage,
@@ -139,16 +139,16 @@ function buildDayTrend(metric: WearableMetric, reading: DailyReadings, lastHour:
           high: null,
         })),
         headline,
-        stats: [headline, stat("schedule", "Waktu tidur", reading.sleep.bedtime !== "-" ? `${reading.sleep.bedtime}–${reading.sleep.wakeTime}` : "-", ""), ...nap],
+        stats: [headline, stat("schedule", "Sleep time", reading.sleep.bedtime !== "-" ? `${reading.sleep.bedtime}–${reading.sleep.wakeTime}` : "-", ""), ...nap],
       }
     }
     case "spo2": {
       const hasData = reading.spo2.average > 0
-      const headline = stat("average", "Rata-rata SpO₂", hasData ? String(reading.spo2.average) : "-", "%")
+      const headline = stat("average", "Average SpO₂", hasData ? String(reading.spo2.average) : "-", "%")
       return {
         points: reading.spo2.readings.map((item) => ({ key: item.time, label: item.time, value: item.value, low: null, high: null })),
         headline,
-        stats: [headline, stat("range", "Rentang SpO₂", hasData ? `${reading.spo2.min}–${reading.spo2.max}` : "-", "%")],
+        stats: [headline, stat("range", "SpO₂ range", hasData ? `${reading.spo2.min}–${reading.spo2.max}` : "-", "%")],
       }
     }
   }

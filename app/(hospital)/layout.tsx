@@ -21,7 +21,7 @@ const instrumentSerif = Instrument_Serif({
 
 export const metadata: Metadata = {
   title: {
-    default: "Sera untuk Dokter",
+    default: "Sera for Doctors",
     template: "%s · HC Clinician",
   },
   description: "Care plan workspace for doctors: build, confirm, and monitor patient care plans.",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 
 export default function HospitalRootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" className={`${poppins.variable} ${instrumentSerif.variable}`}>
+    <html lang="en" className={`${poppins.variable} ${instrumentSerif.variable}`}>
       <body className="theme-hospital min-h-dvh">
         <StoreSync />
         {children}

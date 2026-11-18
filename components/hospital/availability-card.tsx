@@ -15,8 +15,8 @@ export function AvailabilityCard({ days, onToggle, onTimeChange }: AvailabilityC
   return (
     <section className="rounded-2xl border bg-card">
       <header className="border-b px-5 py-4">
-        <h2 className="type-subheading">Jam konsultasi Anda</h2>
-        <p className="type-caption">Atur hari dan jam yang bisa Anda layani untuk konsultasi.</p>
+        <h2 className="type-subheading">Your consultation hours</h2>
+        <p className="type-caption">Set the days and hours you are available for consultations.</p>
       </header>
       <ul className="divide-y">
         {days.map((day) => {
@@ -25,7 +25,7 @@ export function AvailabilityCard({ days, onToggle, onTimeChange }: AvailabilityC
             <li key={day.id} className="flex min-h-16 flex-wrap items-center justify-between gap-3 px-5 py-3">
               <div className="flex items-center gap-3">
                 <Switch id={`availability-${day.id}`} checked={day.isActive} onCheckedChange={(isActive) => onToggle(day.id, isActive)} />
-                <Label htmlFor={`availability-${day.id}`} className={cn("w-14 text-sm font-medium", !day.isActive && "text-muted-foreground")}>
+                <Label htmlFor={`availability-${day.id}`} className={cn("w-24 text-sm font-medium", !day.isActive && "text-muted-foreground")}>
                   {label}
                 </Label>
               </div>
@@ -34,7 +34,7 @@ export function AvailabilityCard({ days, onToggle, onTimeChange }: AvailabilityC
                   <Input
                     type="time"
                     value={day.startTime}
-                    aria-label={`Jam mulai ${label}`}
+                    aria-label={`Start time ${label}`}
                     onChange={(event) => onTimeChange(day.id, "startTime", event.target.value)}
                     className="w-32 bg-card"
                   />
@@ -44,13 +44,13 @@ export function AvailabilityCard({ days, onToggle, onTimeChange }: AvailabilityC
                   <Input
                     type="time"
                     value={day.endTime}
-                    aria-label={`Jam selesai ${label}`}
+                    aria-label={`End time ${label}`}
                     onChange={(event) => onTimeChange(day.id, "endTime", event.target.value)}
                     className="w-32 bg-card"
                   />
                 </div>
               ) : (
-                <span className="text-sm text-muted-foreground">Tidak menerima konsultasi</span>
+                <span className="text-sm text-muted-foreground">Not accepting consultations</span>
               )}
             </li>
           )

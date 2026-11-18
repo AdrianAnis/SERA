@@ -18,11 +18,11 @@ export function DashboardFollowUpsCard({ rows }: DashboardFollowUpsCardProps) {
   return (
     <section className="rounded-2xl border bg-card">
       <header className="border-b px-5 py-4">
-        <h2 className="type-subheading">Kontrol terdekat</h2>
-        <p className="type-caption">Dari care plan aktif.</p>
+        <h2 className="type-subheading">Upcoming follow-ups</h2>
+        <p className="type-caption">From active care plans.</p>
       </header>
       {rows.length === 0 ? (
-        <p className="p-8 text-center type-caption">Belum ada jadwal kontrol.</p>
+        <p className="p-8 text-center type-caption">No follow-ups scheduled.</p>
       ) : (
         <ul className="divide-y">
           {rows.map((row) => (

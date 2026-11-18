@@ -54,7 +54,7 @@ export function WearableDetailView({ patientId, metric }: WearableDetailViewProp
 
   if (!isHydrated) return <HospitalPageSkeleton />
 
-  if (!patient) return <PageHeader title="Pasien tidak ditemukan" description="Data smartwatch tidak bisa dibuka tanpa data pasien." />
+  if (!patient) return <PageHeader title="Patient not found" description="Smartwatch data cannot be opened without patient data." />
 
   const hasConnection = deviceConnected !== null ? deviceConnected : Boolean(connection)
   const activeDeviceName = deviceName || connection?.deviceName
@@ -68,7 +68,7 @@ export function WearableDetailView({ patientId, metric }: WearableDetailViewProp
           <Button asChild variant="outline">
             <Link href={routes.hospital.monitoring(patientId)}>
               <ChevronLeft />
-              Kembali ke monitoring
+              Back to monitoring
             </Link>
           </Button>
         }
