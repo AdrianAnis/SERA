@@ -5,7 +5,6 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { ChevronRight, Search } from "lucide-react"
 
-import { AddPatientDialog } from "@/components/hospital/add-patient-dialog"
 import { HospitalPageSkeleton } from "@/components/hospital/hospital-page-skeleton"
 import { PageHeader } from "@/components/hospital/page-header"
 import { PlanStatusLabel } from "@/components/hospital/plan-status-label"
@@ -59,7 +58,7 @@ export function PatientListView() {
 
   return (
     <>
-      <PageHeader title="Patients" description={`${patients.length} patient(s) under your care.`} actions={<AddPatientDialog />} />
+      <PageHeader title="Patients" description={`${patients.length} patient(s) under your care.`} />
       <div className="space-y-4 p-4 md:p-6">
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
