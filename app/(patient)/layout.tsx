@@ -1,3 +1,10 @@
+import { notFound } from "next/navigation"
+
+export default function PatientRootLayout() {
+  notFound()
+}
+
+/*
 import type { Metadata, Viewport } from "next"
 import { Poppins } from "next/font/google"
 
@@ -37,3 +44,4 @@ export default function PatientRootLayout({ children }: { children: React.ReactN
     </html>
   )
 }
+*/

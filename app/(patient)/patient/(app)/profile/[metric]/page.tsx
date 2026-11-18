@@ -1,3 +1,10 @@
+import { notFound } from "next/navigation"
+
+export default function ActivityMetricPage() {
+  notFound()
+}
+
+/*
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
@@ -12,3 +19,4 @@ export default async function ActivityMetricPage({ params }: PageProps<"/patient
   if (!parsedMetric.success) notFound()
   return <ActivityMetricView metric={parsedMetric.data} />
 }
+*/

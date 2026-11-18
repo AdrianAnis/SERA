@@ -1,3 +1,10 @@
+import { notFound } from "next/navigation"
+
+export default function DoctorDetailPage() {
+  notFound()
+}
+
+/*
 import type { Metadata } from "next"
 import { DoctorProfileView } from "@/components/patient/doctor-profile-view"
 
@@ -9,4 +16,4 @@ export const metadata: Metadata = {
 export default function DoctorDetailPage() {
   return <DoctorProfileView />
 }
-
+*/

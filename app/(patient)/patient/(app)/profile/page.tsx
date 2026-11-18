@@ -1,3 +1,10 @@
+import { notFound } from "next/navigation"
+
+export default function ProfilePage() {
+  notFound()
+}
+
+/*
 import { Suspense } from "react"
 import type { Metadata } from "next"
 
@@ -13,3 +20,4 @@ export default function ProfilePage() {
     </Suspense>
   )
 }
+*/

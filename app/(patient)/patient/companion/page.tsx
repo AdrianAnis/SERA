@@ -1,3 +1,10 @@
+import { notFound } from "next/navigation"
+
+export default function CompanionPage() {
+  notFound()
+}
+
+/*
 import type { Metadata } from "next"
 
 import { CompanionView } from "@/components/patient/companion-view"
@@ -12,3 +19,4 @@ export default function CompanionPage() {
     </PatientSessionGate>
   )
 }
+*/
