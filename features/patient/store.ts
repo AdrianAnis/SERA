@@ -2,7 +2,7 @@ import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 
 import type { Doctor, HealthHistoryEntry, Patient } from "@/features/patient/types"
-import { patientApi } from "@/lib/api"
+import { ApiError, patientApi } from "@/lib/api"
 import { mockDoctors, mockPatients } from "@/mocks/patients"
 import { mockHistory } from "@/mocks/history"
 
@@ -16,11 +16,12 @@ type PatientState = {
   error: string | null
   fetchPatients: () => Promise<void>
   fetchPatientRecord: (patientId: string) => Promise<void>
+  findPatientByMrn: (mrn: string) => Promise<Patient | null>
 }
 
 export const usePatientStore = create<PatientState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       doctors: mockDoctors,
       patients: mockPatients,
       history: mockHistory,
@@ -81,6 +82,24 @@ export const usePatientStore = create<PatientState>()(
         } catch (err) {
           console.error(`Gagal mengambil record pasien ${patientId} dari backend:`, err)
           set({ error: (err as Error).message, isLoading: false })
+        }
+      },
+
+      findPatientByMrn: async (mrn: string) => {
+        const normalizedMrn = mrn.trim()
+        try {
+          const patient = await patientApi.validateMrn(normalizedMrn)
+          set((state) => ({
+            patients: state.patients.some((p) => p.id === patient.id)
+              ? state.patients.map((p) => (p.id === patient.id ? patient : p))
+              : [...state.patients, patient],
+          }))
+          return patient
+        } catch (err) {
+          const localPatient = get().patients.find((p) => p.mrn.toLowerCase() === normalizedMrn.toLowerCase())
+          if (localPatient) return localPatient
+          if (err instanceof ApiError && err.statusCode === 404) return null
+          throw err
         }
       },
     }),
