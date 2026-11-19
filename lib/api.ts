@@ -488,36 +488,39 @@ export type AcceptAndCreateRecordInput = {
   allergies?: string[]
 }
 
+export type DoctorSession = {
+  startTime: string
+  endTime: string
+}
+
+export type DoctorDateSchedule = {
+  id: string
+  doctorId: string
+  date: string
+  isActive: boolean
+  sessions: DoctorSession[]
+}
+
+export type UpdateDoctorAvailabilityPayload = {
+  date: string
+  isActive: boolean
+  sessions: DoctorSession[]
+}
+
 export const consultationApi = {
   getDoctors: (query?: string, token?: string) => {
-    // const url = query ? `/patient/doctors?q=${encodeURIComponent(query)}` : "/patient/doctors"
-    // return request<DoctorWithStatus[]>(url, {
-    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    // })
     return disabledPatientEndpoint<DoctorWithStatus[]>("/patient/doctors", query, token)
   },
 
   getDoctorDetail: (doctorId: string, token?: string) => {
-    // return request<DoctorWithStatus>(`/patient/doctors/${doctorId}`, {
-    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    // })
     return disabledPatientEndpoint<DoctorWithStatus>(`/patient/doctors/${doctorId}`, token)
   },
 
   requestConsultation: (doctorId: string, notes?: string, token?: string) => {
-    // return request<{ id: string; status: string }>(`/patient/consultation-requests`, {
-    //   method: "POST",
-    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    //   body: JSON.stringify({ doctorId, notes }),
-    // })
     return disabledPatientEndpoint<{ id: string; status: string }>("/patient/consultation-requests", doctorId, notes, token)
   },
 
   cancelConsultation: (requestId: string, token?: string) => {
-    // return request<{ message: string }>(`/patient/consultation-requests/${requestId}/cancel`, {
-    //   method: "POST",
-    //   headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    // })
     return disabledPatientEndpoint<{ message: string }>(`/patient/consultation-requests/${requestId}/cancel`, token)
   },
 
@@ -547,7 +550,23 @@ export const consultationApi = {
       body: JSON.stringify(data),
     })
   },
+
+  getDoctorAvailability: (month?: string, token?: string) => {
+    const query = month ? `?month=${encodeURIComponent(month)}` : ""
+    return request<DoctorDateSchedule[]>(`/hospital/availability${query}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
+  },
+
+  updateDoctorAvailability: (payload: UpdateDoctorAvailabilityPayload, token?: string) => {
+    return request<{ success: boolean; message: string; data: DoctorDateSchedule }>("/hospital/availability", {
+      method: "PUT",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      body: JSON.stringify(payload),
+    })
+  },
 }
+
 
 export type SyncNotificationResponse = {
   hasUpdate: boolean

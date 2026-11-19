@@ -4,7 +4,11 @@ import { MonitoringView } from "@/components/hospital/monitoring-view"
 
 export const metadata: Metadata = { title: "Monitoring" }
 
-export default async function MonitoringPage({ params }: PageProps<"/hospital/patients/[id]/monitoring">) {
+type MonitoringPageProps = {
+  params: Promise<{ id: string }>
+}
+
+export default async function MonitoringPage({ params }: MonitoringPageProps) {
   const { id } = await params
   return <MonitoringView patientId={id} />
 }
