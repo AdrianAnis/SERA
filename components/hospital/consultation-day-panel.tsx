@@ -35,7 +35,7 @@ export function ConsultationDayPanel({ dateKey, now, consultations, patientNames
             <ConsultationRow
               key={consultation.id}
               consultation={consultation}
-              patientName={patientNames[consultation.patientId] ?? consultation.patientId}
+              patientName={patientNames[consultation.patientId] ?? consultation.patientName ?? consultation.patientId}
               needsReconfirmation={reconfirmationIds.includes(consultation.id)}
               onCancel={onCancel}
               onReconfirm={onReconfirm}

@@ -27,6 +27,11 @@ const STATUS_TONE: Record<ConsultationStatus, StatusTone> = {
 
 export function ConsultationRow({ consultation, patientName, needsReconfirmation, onCancel, onReconfirm }: ConsultationRowProps) {
   const isCancelled = consultation.status === "cancelled"
+  const patientHref = consultation.patientId?.startsWith("p-")
+    ? routes.hospital.patientDetail(consultation.patientId)
+    : consultation.requestStatus === "pending"
+    ? routes.hospital.requestRecord(consultation.id)
+    : routes.hospital.patientList
 
   return (
     <li className="space-y-3 px-5 py-4">
@@ -36,7 +41,7 @@ export function ConsultationRow({ consultation, patientName, needsReconfirmation
         </p>
         <StatusDot tone={STATUS_TONE[consultation.status]} label={CONSULTATION_STATUS_LABEL[consultation.status]} />
       </div>
-      <Link href={routes.hospital.patientDetail(consultation.patientId)} className="flex items-center gap-3 hover:opacity-80">
+      <Link href={patientHref} className="flex items-center gap-3 hover:opacity-80">
         <Avatar className="size-10">
           <AvatarFallback className="bg-primary/10 text-sm font-semibold text-primary">{getInitials(patientName)}</AvatarFallback>
         </Avatar>

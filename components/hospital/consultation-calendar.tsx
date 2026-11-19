@@ -64,7 +64,7 @@ function CalendarDayCell({ day, isCurrentMonth, isToday, isSelected, isInactive,
       </span>
       {consultations.slice(0, VISIBLE_CHIPS).map((consultation) => (
         <span key={consultation.id} className={cn("truncate rounded px-1.5 py-0.5 text-[11px] leading-tight font-medium", CHIP_CLASS[consultation.status])}>
-          {toTimeKey(consultation.startsAt)} {(patientNames[consultation.patientId] ?? "").split(" ")[0]}
+          {toTimeKey(consultation.startsAt)} {(patientNames[consultation.patientId] ?? consultation.patientName ?? "").split(" ")[0]}
         </span>
       ))}
       {hiddenCount > 0 ? <span className="px-1.5 text-[11px] text-muted-foreground">+{hiddenCount} more</span> : null}

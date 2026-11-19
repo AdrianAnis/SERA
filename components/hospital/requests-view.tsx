@@ -208,10 +208,16 @@ export function RequestsView() {
                       </p>
                     </div>
 
-                    {/* Request date */}
-                    <div className="md:col-span-2">
+                    {/* Request date & Scheduled Slot */}
+                    <div className="md:col-span-2 space-y-1">
+                      {req.scheduledDate && req.scheduledTime ? (
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
+                          <Clock className="size-3.5 shrink-0" />
+                          <span>{req.scheduledDate} · {req.scheduledTime}</span>
+                        </div>
+                      ) : null}
                       <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Calendar className="size-3.5" />
+                        <Calendar className="size-3.5 shrink-0" />
                         {formattedDate}
                       </span>
                     </div>

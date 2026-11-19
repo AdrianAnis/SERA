@@ -454,7 +454,10 @@ export type ConsultationRequestItem = {
   userEmail: string
   userPhone?: string | null
   doctorId: string
+  patientId?: string | null
   status: "pending" | "approved" | "rejected" | "cancelled"
+  scheduledDate?: string | null
+  scheduledTime?: string | null
   notes?: string | null
   createdAt: string
   updatedAt: string

@@ -11,6 +11,10 @@ export type Consultation = {
   cancelReason: string | null
   cancelledAt: string | null
   reconfirmedAt: string | null
+  patientName?: string
+  userEmail?: string
+  userPhone?: string | null
+  requestStatus?: "pending" | "approved" | "rejected" | "cancelled"
 }
 
 export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6
