@@ -50,7 +50,14 @@ export function RequestsView() {
       try {
         setIsLoading(true)
         const data = await consultationApi.getDoctorRequests(doctorSession?.token)
-        if (isMounted) setRequests(data)
+        const seen = new Set<string>()
+        const uniqueData = data.filter((item) => {
+          const key = item.userId || item.userName
+          if (seen.has(key)) return false
+          seen.add(key)
+          return true
+        })
+        if (isMounted) setRequests(uniqueData)
       } catch (err) {
         console.error("Gagal memuat permintaan konsultasi:", err)
       } finally {
