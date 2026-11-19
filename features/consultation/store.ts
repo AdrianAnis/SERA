@@ -74,7 +74,7 @@ export const useConsultationStore = create<ConsultationState>()(
             isLoading: false,
           })
         } catch (err) {
-          console.error("Gagal mengambil data konsultasi dari backend:", err)
+          console.error("Failed to load consultations from backend:", err)
           set({
             error: (err as Error).message || "Failed to load consultations",
             isLoading: false,
@@ -87,7 +87,7 @@ export const useConsultationStore = create<ConsultationState>()(
             await consultationApi.rejectRequest(consultationId, token)
           }
         } catch (err) {
-          console.error("Gagal membatalkan konsultasi di backend:", err)
+          console.error("Failed to cancel consultation on backend:", err)
         }
         set((state) => ({
           consultations: state.consultations.map((consultation) =>
