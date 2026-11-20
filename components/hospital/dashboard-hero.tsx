@@ -8,11 +8,10 @@ import { formatDate, getGreeting } from "@/lib/date"
 type DashboardHeroProps = {
   doctorName: string
   now: Date
-  pendingCount: number
   action: { href: string; label: string }
 }
 
-export function DashboardHero({ doctorName, now, pendingCount, action }: DashboardHeroProps) {
+export function DashboardHero({ doctorName, now, action }: DashboardHeroProps) {
   return (
     <section className="relative overflow-hidden rounded-3xl bg-primary p-6 text-primary-foreground md:p-8">
       <RingOrnament />
@@ -20,9 +19,6 @@ export function DashboardHero({ doctorName, now, pendingCount, action }: Dashboa
       <h1 className="relative mt-2 type-title text-primary-foreground">
         {getGreeting(now)}, {doctorName}
       </h1>
-      <p className="relative mt-1 max-w-xl text-primary-foreground/80">
-        {pendingCount === 0 ? "Nothing needs your review right now." : `${pendingCount} item(s) are waiting for your review today.`}
-      </p>
       <Button asChild size="lg" className="relative mt-5 h-11 bg-primary-foreground px-5 text-primary hover:bg-primary-foreground/90">
         <Link href={action.href}>
           {action.label}

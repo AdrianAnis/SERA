@@ -2,7 +2,6 @@
 
 import { CalendarCheck, CalendarClock, Users } from "lucide-react"
 
-import { DashboardAttentionCard } from "@/components/hospital/dashboard-attention-card"
 import { DashboardFollowUpsCard, type FollowUpRow } from "@/components/hospital/dashboard-followups-card"
 import { DashboardHero } from "@/components/hospital/dashboard-hero"
 import { DashboardStatCard } from "@/components/hospital/dashboard-stat-card"
@@ -13,7 +12,6 @@ import {
   selectNextFollowUp,
 } from "@/features/care-plan/selectors"
 import { useCarePlanStore } from "@/features/care-plan/store"
-import { useCompanionStore } from "@/features/companion/store"
 import {
   selectConsultationsNeedingReconfirmation,
   selectDoctorAvailability,
@@ -22,8 +20,6 @@ import {
   selectTodayConsultations,
 } from "@/features/consultation/selectors"
 import { useConsultationStore } from "@/features/consultation/store"
-import { selectAttentionItems } from "@/features/dashboard/selectors"
-import { useFeedbackStore } from "@/features/feedback/store"
 import { usePatientStore } from "@/features/patient/store"
 import { toDateKey } from "@/lib/date"
 import { routes } from "@/lib/routes"
@@ -37,16 +33,12 @@ export function DashboardView() {
   const { doctor } = useDoctorContext()
   const patients = usePatientStore((state) => state.patients)
   const plans = useCarePlanStore((state) => state.plans)
-  const feedbackEntries = useFeedbackStore((state) => state.entries)
-  const threads = useCompanionStore((state) => state.threads)
   const consultations = useConsultationStore((state) => state.consultations)
   const availability = useConsultationStore((state) => state.availability)
   const now = useNow()
 
   if (!isHydrated) return <HospitalPageSkeleton />
 
-  const patientNames = Object.fromEntries(patients.map((patient) => [patient.id, patient.name]))
-  const attentionItems = selectAttentionItems({ feedbackEntries, threads })
   const doctorConsultations = doctor ? selectDoctorConsultations(consultations, doctor.id) : []
   const doctorAvailability = doctor ? selectDoctorAvailability(availability, doctor.id) : []
   const todayConsultationCount = selectTodayConsultations(doctorConsultations, now).length
@@ -67,7 +59,7 @@ export function DashboardView() {
 
   return (
     <div className="space-y-6 p-4 md:p-6">
-      <DashboardHero doctorName={doctor?.name ?? "Doctor"} now={now} pendingCount={attentionItems.length} action={heroAction} />
+      <DashboardHero doctorName={doctor?.name ?? "Doctor"} now={now} action={heroAction} />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <DashboardStatCard icon={Users} label="Patients" value={patients.length} href={routes.hospital.patientList} />
@@ -75,12 +67,7 @@ export function DashboardView() {
         <DashboardStatCard icon={CalendarCheck} label="Appointments to reconfirm" value={reconfirmationCount} href={routes.hospital.consultations} />
       </div>
 
-      <div className="grid items-start gap-6 xl:grid-cols-3">
-        <div className="xl:col-span-2">
-          <DashboardAttentionCard items={attentionItems} patientNames={patientNames} />
-        </div>
-        <DashboardFollowUpsCard rows={followUpRows} />
-      </div>
+      <DashboardFollowUpsCard rows={followUpRows} />
     </div>
   )
 }
